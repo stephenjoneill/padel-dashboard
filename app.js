@@ -1,25 +1,22 @@
 let data;
 
-// Try Airtable first, fallback to local JSON
+// Fetch from Netlify function
 fetch('/.netlify/functions/airtable')
   .then(res => res.json())
-  .then(records => {
-    data = transformData(records);
+  .then(({ shots, playerMap }) => {
+    data = transformData(shots, playerMap);
     init();
   })
-  .catch(() => {
-    fetch('data.json')
-      .then(res => res.json())
-      .then(json => {
-        data = json;
-        init();
-      });
+  .catch(err => {
+    console.error("Error loading Airtable data:", err);
   });
 
 function init() {
   if (!data || !data.players) return;
 
   const playerSelect = document.getElementById("playerSelect");
+
+  playerSelect.innerHTML = "";
 
   Object.keys(data.players).forEach(p => {
     playerSelect.innerHTML += `<option value="${p}">${data.players[p].player_name}</option>`;
@@ -33,6 +30,8 @@ function init() {
 function updateDashboard() {
   const playerKey = document.getElementById("playerSelect").value;
   const player = data.players[playerKey];
+
+  if (!player) return;
 
   renderKPIs(player);
   renderCharts(player);
@@ -54,20 +53,21 @@ function renderKPIs(player) {
     <div class="column"><div class="kpi"><h2>${totalShots}</h2>Shots</div></div>
     <div class="column"><div class="kpi"><h2>${winners}</h2>Winners</div></div>
     <div class="column"><div class="kpi"><h2>${errors}</h2>Errors</div></div>
-    <div class="column"><div class="kpi"><h2>${winners-errors}</h2>Efficiency</div></div>
+    <div class="column"><div class="kpi"><h2>${winners - errors}</h2>Efficiency</div></div>
   `;
 }
 
 function renderCharts(player) {
-  const labels = player.shot_summary.map(s=>s.shot_type);
+
+  const labels = player.shot_summary.map(s => s.shot_type);
 
   new Chart(document.getElementById("shotChart"), {
     type: 'doughnut',
     data: {
       labels,
       datasets: [{
-        data: player.shot_summary.map(s=>s.shot_count),
-        backgroundColor: ["#49ACD9","#C0D942","#B4FF00","#888"]
+        data: player.shot_summary.map(s => s.shot_count),
+        backgroundColor: ["#49ACD9", "#C0D942", "#B4FF00", "#888"]
       }]
     }
   });
@@ -78,7 +78,7 @@ function renderCharts(player) {
       labels,
       datasets: [{
         label: "Errors",
-        data: player.shot_summary.map(s=>s.error_count),
+        data: player.shot_summary.map(s => s.error_count),
         backgroundColor: "#FF6B6B"
       }]
     }
@@ -86,23 +86,30 @@ function renderCharts(player) {
 }
 
 function sum(player, field) {
-  return player.shot_summary.reduce((a,b)=>a+(b[field]||0),0);
+  return player.shot_summary.reduce((a, b) => a + (b[field] || 0), 0);
 }
 
-function transformData(records) {
+// 🔥 KEY TRANSFORM FUNCTION
+function transformData(records, playerMap) {
+
   const players = {};
 
   records.forEach(r => {
+
     const f = r.fields;
 
-    const player = Array.isArray(f.Player) ? f.Player[0] : f.Player;
+    const playerId = f.Player?.[0];
+    const player = playerMap[playerId];
+
     const shotType = f["Shot Type"];
     const result = f.Result;
 
     if (!player || !shotType) return;
 
-    if (!players[player.toLowerCase()]) {
-      players[player.toLowerCase()] = {
+    const key = player.toLowerCase();
+
+    if (!players[key]) {
+      players[key] = {
         player_name: player,
         shot_summary: [],
         strengths: [],
@@ -111,7 +118,7 @@ function transformData(records) {
       };
     }
 
-    let shot = players[player.toLowerCase()].shot_summary.find(s => s.shot_type === shotType);
+    let shot = players[key].shot_summary.find(s => s.shot_type === shotType);
 
     if (!shot) {
       shot = {
@@ -120,7 +127,7 @@ function transformData(records) {
         error_count: 0,
         winner_count: 0
       };
-      players[player.toLowerCase()].shot_summary.push(shot);
+      players[key].shot_summary.push(shot);
     }
 
     shot.shot_count++;
@@ -130,4 +137,29 @@ function transformData(records) {
   });
 
   return { players };
+}
+
+/* REPORT PAGE SUPPORT */
+
+const params = new URLSearchParams(window.location.search);
+const playerKey = params.get("player");
+
+if (playerKey && data && data.players) {
+
+  const p = data.players[playerKey];
+
+  if (p) {
+    document.getElementById("playerName").innerText = p.player_name;
+    document.getElementById("headline").innerText = "Performance Summary";
+    document.getElementById("summary").innerText = "Auto-generated report based on match data.";
+
+    document.getElementById("strengths").innerHTML =
+      p.strengths.map(s => `<p>${s.title}</p>`).join("");
+
+    document.getElementById("weaknesses").innerHTML =
+      p.weaknesses.map(w => `<p>${w.title}</p>`).join("");
+
+    document.getElementById("recommendations").innerHTML =
+      p.recommendations.map(r => `<p>${r.title}</p>`).join("");
+  }
 }
