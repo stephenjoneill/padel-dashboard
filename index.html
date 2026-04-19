@@ -11,18 +11,18 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="app-shell">
-  <div class="page">
-    <header class="topbar">
-      <div class="brand">
+  <div class="page app-page">
+    <header class="topbar app-topbar">
+      <div class="brand brand-strong">
         <img src="logo.png" alt="Momentum Padel" class="brand-logo" />
         <div>
-          <div id="brandKicker" class="brand-kicker">Performance Platform</div>
-          <h1 id="appTitle">Momentum Padel Dashboard</h1>
+          <div class="brand-kicker">Performance Platform</div>
+          <h1>Momentum Padel Dashboard</h1>
         </div>
       </div>
 
       <div class="topbar-actions">
-        <div class="control-group">
+        <div class="control-group compact-control">
           <label for="viewModeSelect">View</label>
           <select id="viewModeSelect">
             <option value="team">Team Dashboard</option>
@@ -30,17 +30,22 @@
           </select>
         </div>
 
-        <div class="control-group" id="playerControlWrap">
+        <div class="control-group compact-control" id="playerControlWrap">
           <label for="playerSelect">Player</label>
           <select id="playerSelect"></select>
         </div>
 
-        <div class="control-group">
+        <div class="control-group compact-control">
           <label for="planSelect">Plan</label>
-          <select id="planSelect"></select>
+          <select id="planSelect">
+            <option value="starter">Starter</option>
+            <option value="coach_pro">Coach Pro</option>
+            <option value="elite">Elite</option>
+            <option value="custom">Custom</option>
+          </select>
         </div>
 
-        <span id="dashboardPlanBadge" class="mode-pill">PLAN</span>
+        <span id="dashboardPlanBadge" class="mode-pill">Starter</span>
         <button id="settingsToggleBtn" class="btn btn-ghost" type="button">Settings</button>
         <button id="startTourBtn" class="btn btn-ghost" type="button">Start Tour</button>
         <button id="openHelpBtn" class="btn btn-secondary" type="button">Help</button>
@@ -57,29 +62,44 @@
       </div>
       <div class="settings-grid">
         <div class="settings-card">
-          <span class="settings-card-title">Current configuration</span>
-          <div id="settingsSummary" class="settings-summary"></div>
+          <label for="planSelectMirror">Subscription plan</label>
+          <select id="planSelectMirror">
+            <option value="starter">Starter</option>
+            <option value="coach_pro">Coach Pro</option>
+            <option value="elite">Elite</option>
+            <option value="custom">Custom</option>
+          </select>
+          <div id="settingsSummary" class="settings-summary">Configure what this dashboard exposes by plan and feature.</div>
         </div>
-        <div id="featureToggleList" class="feature-toggle-list"></div>
+        <div class="settings-card">
+          <div class="settings-card-title">Feature access</div>
+          <div id="featureToggleList" class="feature-toggle-list"></div>
+        </div>
       </div>
       <div class="settings-actions">
         <button id="settingsResetBtn" class="btn btn-secondary" type="button">Reset settings</button>
       </div>
     </section>
 
-    <section class="hero hero-refined" data-tour="hero">
+    <section class="hero hero-refined hero-dashboard" data-tour="hero">
       <div class="hero-copy">
-        <div class="eyebrow" id="heroEyebrow">History-enabled analysis</div>
+        <div class="eyebrow" id="heroEyebrow">Club competitive · player development</div>
         <h2 id="heroPlayerName">Loading...</h2>
+        <p class="hero-subtitle" id="heroSubheading">Loading profile...</p>
         <p id="heroSummary">Loading summary...</p>
+
+        <div class="hero-actions">
+          <a id="heroReportLink" class="btn btn-primary" href="#">View Player Report</a>
+          <button class="btn btn-ghost" type="button">Share</button>
+        </div>
       </div>
 
       <div class="hero-side">
-        <div class="hero-stat">
+        <div class="hero-stat hero-stat-key">
           <span class="hero-stat-label" id="heroBestLabel">Best shot</span>
           <strong id="heroBestShot">—</strong>
         </div>
-        <div class="hero-stat">
+        <div class="hero-stat hero-stat-key">
           <span class="hero-stat-label" id="heroPriorityLabel">Priority fix</span>
           <strong id="heroPriorityFix">—</strong>
         </div>
@@ -92,7 +112,7 @@
 
     <section class="kpi-grid" id="kpiGrid"></section>
 
-    <section class="content-grid">
+    <section class="content-grid content-grid-tight">
       <article class="panel panel-large">
         <div class="panel-head">
           <div>
@@ -130,12 +150,15 @@
       </article>
     </section>
 
-    <section class="two-col" id="trendSection" data-tour="trends">
+    <section class="two-col two-col-emphasis" id="trendSection" data-tour="trends">
       <article class="panel">
         <div class="panel-head">
           <div>
             <div class="panel-kicker">Trend layer</div>
-            <div class="panel-title-row"><h3>Match trend</h3><button class="help-icon-btn" type="button" data-help-topic="trends">?</button></div>
+            <div class="panel-title-row">
+              <h3>Match trend</h3>
+              <button class="help-icon-btn" type="button" data-help-topic="trends">?</button>
+            </div>
           </div>
         </div>
         <div class="chart-wrap trend-wrap">
@@ -147,14 +170,17 @@
         <div class="panel-head">
           <div>
             <div class="panel-kicker">Trend layer</div>
-            <div class="panel-title-row"><h3>Trend signals</h3><button class="help-icon-btn" type="button" data-help-topic="trends">?</button></div>
+            <div class="panel-title-row">
+              <h3>Trend signals</h3>
+              <button class="help-icon-btn" type="button" data-help-topic="trends">?</button>
+            </div>
           </div>
         </div>
         <div id="trendSignalList" class="stack-list"></div>
       </article>
     </section>
 
-    <section class="panel" id="historySection">
+    <section class="panel panel-history" id="historySection">
       <div class="panel-head">
         <div>
           <div class="panel-kicker">History</div>
@@ -195,40 +221,52 @@
         <div class="panel-head">
           <div>
             <div class="panel-kicker">Coach playbook</div>
-            <div class="panel-title-row"><h3>Recommended drills</h3><button class="help-icon-btn" type="button" data-help-topic="plans">?</button></div>
+            <div class="panel-title-row">
+              <h3>Recommended drills</h3>
+              <button class="help-icon-btn" type="button" data-help-topic="plans">?</button>
+            </div>
           </div>
         </div>
         <div id="recommendedDrillList" class="stack-list"></div>
       </article>
     </section>
 
-    <section class="panel" id="sessionPlanSection">
+    <section class="panel panel-session" id="sessionPlanSection">
       <div class="panel-head">
         <div>
           <div class="panel-kicker">Next session</div>
-          <div class="panel-title-row"><h3>Ready-to-run session plan</h3><button class="help-icon-btn" type="button" data-help-topic="plans">?</button></div>
+          <div class="panel-title-row">
+            <h3>Ready-to-run session plan</h3>
+            <button class="help-icon-btn" type="button" data-help-topic="plans">?</button>
+          </div>
         </div>
       </div>
       <div id="sessionPlanSummary" class="session-plan-summary"></div>
-      <div id="sessionPlanBlocks" class="stack-list"></div>
+      <div id="sessionPlanBlocks" class="stack-list stack-list-spacious"></div>
     </section>
 
     <section class="two-col" id="analysisSection">
-      <article class="panel">
+      <article class="panel panel-soft">
         <div class="panel-head">
           <div>
             <div class="panel-kicker">Auto analysis</div>
-            <div class="panel-title-row"><h3>Strengths</h3><button class="help-icon-btn" type="button" data-help-topic="insights">?</button></div>
+            <div class="panel-title-row">
+              <h3>Strengths</h3>
+              <button class="help-icon-btn" type="button" data-help-topic="insights">?</button>
+            </div>
           </div>
         </div>
         <div id="strengthsList" class="stack-list"></div>
       </article>
 
-      <article class="panel">
+      <article class="panel panel-soft">
         <div class="panel-head">
           <div>
             <div class="panel-kicker">Auto analysis</div>
-            <div class="panel-title-row"><h3>Improvement areas</h3><button class="help-icon-btn" type="button" data-help-topic="insights">?</button></div>
+            <div class="panel-title-row">
+              <h3>Improvement areas</h3>
+              <button class="help-icon-btn" type="button" data-help-topic="insights">?</button>
+            </div>
           </div>
         </div>
         <div id="weaknessesList" class="stack-list"></div>
@@ -236,7 +274,7 @@
     </section>
 
     <section class="three-col" id="coachInsightsSection">
-      <article class="panel">
+      <article class="panel panel-soft">
         <div class="panel-head">
           <div>
             <div class="panel-kicker">Coach insight</div>
@@ -246,7 +284,7 @@
         <div id="coachStrengthsList" class="stack-list"></div>
       </article>
 
-      <article class="panel">
+      <article class="panel panel-soft">
         <div class="panel-head">
           <div>
             <div class="panel-kicker">Coach insight</div>
@@ -256,7 +294,7 @@
         <div id="coachWeaknessesList" class="stack-list"></div>
       </article>
 
-      <article class="panel">
+      <article class="panel panel-soft">
         <div class="panel-head">
           <div>
             <div class="panel-kicker">Coach insight</div>
@@ -267,7 +305,7 @@
       </article>
     </section>
 
-    <section class="panel" id="tacticalSection">
+    <section class="panel panel-soft" id="tacticalSection">
       <div class="panel-head">
         <div>
           <div class="panel-kicker">Coach insight</div>
@@ -281,7 +319,10 @@
       <div class="panel-head">
         <div>
           <div class="panel-kicker">Benchmarking</div>
-          <div class="panel-title-row"><h3>Level comparison</h3><button class="help-icon-btn" type="button" data-help-topic="benchmarks">?</button></div>
+          <div class="panel-title-row">
+            <h3>Level comparison</h3>
+            <button class="help-icon-btn" type="button" data-help-topic="benchmarks">?</button>
+          </div>
         </div>
       </div>
       <div class="table-wrap">
@@ -327,7 +368,7 @@
       </div>
     </section>
 
-    <section class="panel">
+    <section class="panel" id="detailSection">
       <div class="panel-head">
         <div>
           <div class="panel-kicker">Underlying data</div>
