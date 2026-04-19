@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="report-body">
-  <div class="report-page report-page-v3">
-    <header class="report-header report-header-v3">
+  <div class="report-page">
+    <header class="report-header surface-card surface-card-strong fade-up">
       <div class="report-brand">
         <img src="logo.png" alt="Momentum Padel" class="report-logo" />
         <div>
@@ -31,22 +31,23 @@
             <option value="custom">Custom</option>
           </select>
         </div>
+
         <span id="reportPlanBadge" class="mode-pill">Starter</span>
         <button id="startTourBtn" class="btn btn-ghost" type="button">Start Tour</button>
-        <button id="openHelpBtn" class="btn btn-secondary" type="button">Help</button>
-        <a class="btn btn-ghost" href="index.html">Dashboard</a>
+        <button id="openHelpBtn" class="btn btn-ghost" type="button">Help</button>
+        <a class="btn btn-secondary" href="index.html">Dashboard</a>
         <button class="btn btn-primary print-btn" onclick="window.print()">Export PDF</button>
       </div>
     </header>
 
-    <section class="report-hero hero-refined report-hero-v3" data-tour="report-hero">
+    <section class="report-hero surface-card surface-card-hero fade-up" data-tour="report-hero">
       <div class="report-headline-card">
         <div class="eyebrow">Match summary</div>
         <h2 id="reportHeadline">Loading headline...</h2>
         <p id="reportSummary">Loading summary...</p>
       </div>
 
-      <div class="report-meta-card report-meta-grid">
+      <div class="report-meta-card">
         <div class="meta-row">
           <span>Best shot</span>
           <strong id="reportBestShot">—</strong>
@@ -70,33 +71,52 @@
       </div>
     </section>
 
-    <section class="report-kpis" id="reportKpis"></section>
+    <section class="report-kpis fade-up" id="reportKpis"></section>
 
-    <section class="report-grid report-grid-emphasis" id="reportTrendSection" data-tour="trends">
-      <article class="report-card">
-        <div class="panel-kicker">Trend layer</div>
-        <div class="panel-title-row">
-          <h3>Match trend</h3>
-          <button class="help-icon-btn" type="button" data-help-topic="trends">?</button>
+    <section class="report-grid report-grid-emphasis fade-up" id="reportTrendSection" data-tour="trends">
+      <article class="report-card surface-card">
+        <div class="panel-head panel-head-split">
+          <div>
+            <div class="panel-kicker">Trend layer</div>
+            <div class="panel-title-row">
+              <h3>Match trend</h3>
+              <button class="help-icon-btn" type="button" data-help-topic="trends">?</button>
+            </div>
+          </div>
+
+          <div class="panel-inline-select">
+            <label for="reportTrendRangeSelect">Range</label>
+            <select id="reportTrendRangeSelect">
+              <option value="6">Last 6 matches</option>
+            </select>
+          </div>
         </div>
-        <div class="chart-wrap report-chart">
+        <div class="chart-wrap chart-wrap-tall">
           <canvas id="reportTrendChart"></canvas>
         </div>
       </article>
 
-      <article class="report-card">
-        <div class="panel-kicker">Trend layer</div>
-        <div class="panel-title-row">
-          <h3>Trend signals</h3>
-          <button class="help-icon-btn" type="button" data-help-topic="trends">?</button>
+      <article class="report-card surface-card panel-soft">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Trend layer</div>
+            <div class="panel-title-row">
+              <h3>Trend signals</h3>
+              <button class="help-icon-btn" type="button" data-help-topic="trends">?</button>
+            </div>
+          </div>
         </div>
         <div id="reportTrendSignalList" class="stack-list"></div>
       </article>
     </section>
 
-    <section class="report-card report-history-card" id="reportHistorySection">
-      <div class="panel-kicker">History</div>
-      <h3>Match history</h3>
+    <section class="report-card surface-card fade-up" id="reportHistorySection">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">History</div>
+          <h3>Match history</h3>
+        </div>
+      </div>
       <div class="table-wrap">
         <table>
           <thead>
@@ -116,110 +136,161 @@
       </div>
     </section>
 
-    <section class="report-grid report-grid-tight">
-      <article class="report-card">
-        <div class="panel-kicker">Shot profile</div>
-        <h3>Distribution</h3>
-        <div class="chart-wrap report-chart">
+    <section class="report-grid report-grid-tight fade-up">
+      <article class="report-card surface-card chart-panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Shot profile</div>
+            <h3>Distribution</h3>
+          </div>
+        </div>
+        <div class="chart-wrap">
           <canvas id="reportShotChart"></canvas>
         </div>
       </article>
 
-      <article class="report-card">
-        <div class="panel-kicker">Risk profile</div>
-        <h3>Errors by shot</h3>
-        <div class="chart-wrap report-chart">
+      <article class="report-card surface-card chart-panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Risk profile</div>
+            <h3>Errors by shot</h3>
+          </div>
+        </div>
+        <div class="chart-wrap">
           <canvas id="reportErrorChart"></canvas>
         </div>
       </article>
     </section>
 
-    <section class="report-grid" id="reportMilestonesSection">
-      <article class="report-card report-card-soft">
-        <div class="panel-kicker">Progress</div>
-        <h3>Milestones</h3>
+    <section class="report-grid fade-up" id="reportMilestonesSection" data-plan-min="coach_pro">
+      <article class="report-card surface-card panel-soft">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Progress</div>
+            <h3>Milestones</h3>
+          </div>
+        </div>
         <div id="reportMilestoneList" class="stack-list"></div>
       </article>
 
-      <article class="report-card report-card-soft" id="reportRecommendedDrillsSection">
-        <div class="panel-kicker">Coach playbook</div>
-        <div class="panel-title-row">
-          <h3>Recommended drills</h3>
-          <button class="help-icon-btn" type="button" data-help-topic="plans">?</button>
+      <article class="report-card surface-card panel-soft" id="reportRecommendedDrillsSection">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Coach playbook</div>
+            <div class="panel-title-row">
+              <h3>Recommended drills</h3>
+              <button class="help-icon-btn" type="button" data-help-topic="plans">?</button>
+            </div>
+          </div>
         </div>
         <div id="reportRecommendedDrillList" class="stack-list"></div>
       </article>
     </section>
 
-    <section class="report-card report-card-soft" id="reportSessionPlanSection">
-      <div class="panel-kicker">Next session</div>
-      <div class="panel-title-row">
-        <h3>Ready-to-run session plan</h3>
-        <button class="help-icon-btn" type="button" data-help-topic="plans">?</button>
+    <section class="report-card surface-card panel-session fade-up" id="reportSessionPlanSection" data-plan-min="coach_pro">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">Next session</div>
+          <div class="panel-title-row">
+            <h3>Ready-to-run session plan</h3>
+            <button class="help-icon-btn" type="button" data-help-topic="plans">?</button>
+          </div>
+        </div>
       </div>
       <div id="reportSessionPlanSummary" class="session-plan-summary"></div>
       <div id="reportSessionPlanBlocks" class="stack-list stack-list-spacious"></div>
     </section>
 
-    <section class="report-grid">
-      <article class="report-card report-card-soft">
-        <div class="panel-kicker">Auto analysis</div>
-        <div class="panel-title-row">
-          <h3>Strengths</h3>
-          <button class="help-icon-btn" type="button" data-help-topic="insights">?</button>
+    <section class="report-grid fade-up" data-plan-min="coach_pro">
+      <article class="report-card surface-card panel-soft">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Auto analysis</div>
+            <div class="panel-title-row">
+              <h3>Strengths</h3>
+              <button class="help-icon-btn" type="button" data-help-topic="insights">?</button>
+            </div>
+          </div>
         </div>
         <div id="reportStrengths" class="stack-list"></div>
       </article>
 
-      <article class="report-card report-card-soft">
-        <div class="panel-kicker">Auto analysis</div>
-        <div class="panel-title-row">
-          <h3>Improvement areas</h3>
-          <button class="help-icon-btn" type="button" data-help-topic="insights">?</button>
+      <article class="report-card surface-card panel-soft">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Auto analysis</div>
+            <div class="panel-title-row">
+              <h3>Improvement areas</h3>
+              <button class="help-icon-btn" type="button" data-help-topic="insights">?</button>
+            </div>
+          </div>
         </div>
         <div id="reportWeaknesses" class="stack-list"></div>
       </article>
     </section>
 
-    <section class="report-grid report-grid-three" id="reportCoachInsightsSection">
-      <article class="report-card report-card-soft">
-        <div class="panel-kicker">Coach insight</div>
-        <h3>Coach strengths</h3>
+    <section class="report-grid report-grid-three fade-up" id="reportCoachInsightsSection" data-plan-min="elite">
+      <article class="report-card surface-card panel-soft">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Coach insight</div>
+            <h3>Coach strengths</h3>
+          </div>
+        </div>
         <div id="reportCoachStrengths" class="stack-list"></div>
       </article>
 
-      <article class="report-card report-card-soft">
-        <div class="panel-kicker">Coach insight</div>
-        <h3>Coach weaknesses</h3>
+      <article class="report-card surface-card panel-soft">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Coach insight</div>
+            <h3>Coach weaknesses</h3>
+          </div>
+        </div>
         <div id="reportCoachWeaknesses" class="stack-list"></div>
       </article>
 
-      <article class="report-card report-card-soft">
-        <div class="panel-kicker">Training focus</div>
-        <h3>Coach recommendations</h3>
+      <article class="report-card surface-card panel-soft">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Training focus</div>
+            <h3>Coach recommendations</h3>
+          </div>
+        </div>
         <div id="reportCoachRecommendations" class="stack-list"></div>
       </article>
     </section>
 
-    <section class="report-card report-card-soft" id="reportTacticalSection">
-      <div class="panel-kicker">Coach insight</div>
-      <h3>Coach tactical observations</h3>
+    <section class="report-card surface-card panel-soft fade-up" id="reportTacticalSection" data-plan-min="elite">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">Coach insight</div>
+          <h3>Coach tactical observations</h3>
+        </div>
+      </div>
       <div id="reportCoachTactical" class="stack-list"></div>
     </section>
 
-    <section class="report-card report-card-soft" id="reportRecommendationsSection">
-      <div class="panel-kicker">Training focus</div>
-      <h3>Auto recommendations</h3>
+    <section class="report-card surface-card panel-soft fade-up" id="reportRecommendationsSection" data-plan-min="coach_pro">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">Training focus</div>
+          <h3>Auto recommendations</h3>
+        </div>
+      </div>
       <div id="reportRecommendations" class="stack-list"></div>
     </section>
 
-    <section class="report-card" id="reportBenchmarkSection" data-tour="report-benchmarks">
-      <div class="panel-kicker">Benchmarking</div>
-      <div class="panel-title-row">
-        <h3>Level comparison</h3>
-        <button class="help-icon-btn" type="button" data-help-topic="benchmarks">?</button>
+    <section class="report-card surface-card fade-up" id="reportBenchmarkSection" data-tour="report-benchmarks">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">Benchmarking</div>
+          <div class="panel-title-row">
+            <h3>Level comparison</h3>
+            <button class="help-icon-btn" type="button" data-help-topic="benchmarks">?</button>
+          </div>
+        </div>
       </div>
-
       <div class="table-wrap">
         <table>
           <thead>
@@ -236,14 +307,18 @@
       </div>
     </section>
 
-    <section class="report-card" id="reportDetailSection">
-      <div class="panel-kicker">Underlying data</div>
-      <h3>Shot detail table</h3>
+    <section class="report-card surface-card fade-up" id="reportDetailSection">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">Underlying data</div>
+          <h3>Shot detail table</h3>
+        </div>
+      </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Shot Type</th>
+              <th>Shot type</th>
               <th>Shots</th>
               <th>Errors</th>
               <th>Winners</th>
@@ -257,7 +332,7 @@
       </div>
     </section>
 
-    <div id="reportLoadingState" class="state-block">Loading player report...</div>
+    <div id="reportLoadingState" class="state-block">Loading report...</div>
     <div id="reportErrorState" class="state-block state-error hidden">Unable to load report data.</div>
   </div>
 
@@ -270,9 +345,11 @@
         </div>
         <button id="closeHelpBtn" class="help-close-btn" type="button">×</button>
       </div>
+
       <div class="help-search-wrap">
         <input id="helpSearchInput" class="help-search-input" type="text" placeholder="Search help topics" />
       </div>
+
       <div id="helpTopicChips" class="help-topic-chips"></div>
       <div id="helpBody" class="help-body"></div>
     </div>
@@ -285,6 +362,7 @@
       <h3 id="tourTitle">Tour</h3>
       <p id="tourBody">Tour guidance</p>
       <div id="tourMeta" class="tour-meta"></div>
+
       <div class="tour-actions">
         <button id="tourBackBtn" class="btn btn-secondary" type="button">Back</button>
         <button id="tourNextBtn" class="btn btn-primary" type="button">Next</button>
