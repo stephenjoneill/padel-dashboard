@@ -19,365 +19,268 @@ loadData();
 
 async function loadData() {
   try {
-    setVisible("loadingState", true);
-    setVisible("errorState", false);
-    setVisible("reportLoadingState", true);
-    setVisible("reportErrorState", false);
+    toggle("loadingState", true);
+    toggle("errorState", false);
+    toggle("reportLoadingState", true);
+    toggle("reportErrorState", false);
 
-    const res = await fetch("/.netlify/functions/airtable");
+    const res = await fetch("./data.json");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const payload = await res.json();
 
-    appData = transformData(payload.shots, payload.playerMap, payload.coachInsights || []);
+    const raw = await res.json();
+    appData = hydrateData(raw);
 
     if (document.getElementById("playerSelect")) initDashboard();
     if (document.getElementById("reportPlayerName")) initReport();
-
   } catch (err) {
     console.error(err);
-    setVisible("loadingState", false);
-    setVisible("reportLoadingState", false);
-    setVisible("errorState", true);
-    setVisible("reportErrorState", true);
+    toggle("loadingState", false);
+    toggle("reportLoadingState", false);
+    toggle("errorState", true);
+    toggle("reportErrorState", true);
   }
 }
 
-function transformData(records, playerMap, coachInsights) {
+function hydrateData(raw) {
   const players = {};
 
-  for (const r of records) {
-    const f = r.fields || {};
-    const playerId = f.Player?.[0];
-    const playerName = playerMap[playerId];
-    const shotType = f["Shot Type"];
-    const result = f.Result;
-
-    if (!playerName || !shotType) continue;
-
-    const key = playerName.toLowerCase();
-
-    if (!players[key]) {
-      players[key] = {
-        player_key: key,
-        player_name: playerName,
-        shot_summary: [],
-        coach: {
-          strengths: [],
-          weaknesses: [],
-          recommendations: []
-        }
-      };
-    }
-
-    let existing = players[key].shot_summary.find(x => x.shot_type === shotType);
-
-    if (!existing) {
-      existing = {
-        shot_type: shotType,
-        shot_count: 0,
-        error_count: 0,
-        winner_count: 0
-      };
-      players[key].shot_summary.push(existing);
-    }
-
-    existing.shot_count += 1;
-
-    if (result === "Winner") existing.winner_count += 1;
-    if (result === "Forced Error" || result === "Unforced Error") existing.error_count += 1;
-  }
-
-  for (const row of coachInsights) {
-    const f = row.fields || {};
-    const playerField = f.Player;
-    let playerName = null;
-
-    if (Array.isArray(playerField) && playerField.length > 0) {
-      playerName = playerMap[playerField[0]] || playerField[0];
-    } else if (typeof playerField === "string") {
-      playerName = playerField;
-    }
-
-    if (!playerName) continue;
-
-    const key = playerName.toLowerCase();
-
-    if (!players[key]) {
-      players[key] = {
-        player_key: key,
-        player_name: playerName,
-        shot_summary: [],
-        coach: {
-          strengths: [],
-          weaknesses: [],
-          recommendations: []
-        }
-      };
-    }
-
-    const strengths = splitText(f.Strengths);
-    const weaknesses = splitText(f.Weaknesses);
-    const recommendations = splitText(f.Recommendations);
-
-    players[key].coach.strengths.push(...strengths);
-    players[key].coach.weaknesses.push(...weaknesses);
-    players[key].coach.recommendations.push(...recommendations);
-  }
-
-  for (const key of Object.keys(players)) {
-    const player = players[key];
-
-    player.shot_summary = player.shot_summary
+  for (const [key, player] of Object.entries(raw.players || {})) {
+    const shotSummary = (player.shot_summary || [])
       .map(row => ({
         ...row,
-        error_rate: pctNum(row.error_count, row.shot_count),
-        winner_rate: pctNum(row.winner_count, row.shot_count),
+        error_rate: pct(row.error_count, row.shot_count),
+        winner_rate: pct(row.winner_count, row.shot_count),
         efficiency: row.winner_count - row.error_count
       }))
       .sort((a, b) => b.shot_count - a.shot_count);
 
-    const totals = getTotals(player.shot_summary);
-    player.kpis = totals;
+    const kpis = getTotals(shotSummary);
+    const rankedStrengths = rankStrengths(shotSummary);
+    const rankedWeaknesses = rankWeaknesses(shotSummary);
 
-    const rankedStrengths = [...player.shot_summary]
-      .filter(x => x.shot_count >= 2)
-      .sort((a, b) => {
-        const aScore = (a.winner_rate * 1.2) - (a.error_rate * 0.8) + (a.efficiency * 8);
-        const bScore = (b.winner_rate * 1.2) - (b.error_rate * 0.8) + (b.efficiency * 8);
-        return bScore - aScore;
-      });
-
-    const rankedWeaknesses = [...player.shot_summary]
-      .filter(x => x.shot_count >= 2)
-      .sort((a, b) => {
-        const aScore = (a.error_rate * 1.3) - (a.winner_rate * 0.5) - (a.efficiency * 6);
-        const bScore = (b.error_rate * 1.3) - (b.winner_rate * 0.5) - (b.efficiency * 6);
-        return bScore - aScore;
-      });
-
-    player.best_shot = rankedStrengths[0]?.shot_type || "No clear leader";
-    player.priority_fix = rankedWeaknesses[0]?.shot_type || "No clear priority";
-    player.headline = buildHeadline(player, rankedStrengths, rankedWeaknesses);
-    player.summary = buildSummary(player, rankedStrengths, rankedWeaknesses);
-    player.strengths = buildStrengths(rankedStrengths);
-    player.weaknesses = buildWeaknesses(rankedWeaknesses);
-    player.recommendations = buildRecommendations(player, rankedStrengths, rankedWeaknesses);
-
-    player.coach.strengths = uniqueNonEmpty(player.coach.strengths);
-    player.coach.weaknesses = uniqueNonEmpty(player.coach.weaknesses);
-    player.coach.recommendations = uniqueNonEmpty(player.coach.recommendations);
+    players[key] = {
+      ...player,
+      player_key: key,
+      shot_summary: shotSummary,
+      kpis,
+      best_shot: rankedStrengths[0]?.shot_type || "No clear leader",
+      priority_fix: rankedWeaknesses[0]?.shot_type || "No clear priority",
+      strengths: buildStrengths(rankedStrengths),
+      weaknesses: buildWeaknesses(rankedWeaknesses),
+      recommendations: buildRecommendations(rankedStrengths, rankedWeaknesses),
+      benchmarkRows: buildBenchmarkRows(player, shotSummary, kpis, raw.benchmarks?.[player.level.toLowerCase()])
+    };
   }
 
-  return { players };
-}
-
-function splitText(value) {
-  if (!value) return [];
-  return String(value)
-    .split(/\n|•|- /)
-    .map(x => x.trim())
-    .filter(Boolean);
-}
-
-function uniqueNonEmpty(arr) {
-  return [...new Set((arr || []).map(x => x.trim()).filter(Boolean))];
-}
-
-function getTotals(rows) {
-  const total_shots = rows.reduce((a, b) => a + b.shot_count, 0);
-  const total_errors = rows.reduce((a, b) => a + b.error_count, 0);
-  const total_winners = rows.reduce((a, b) => a + b.winner_count, 0);
-  const efficiency = total_winners - total_errors;
-
   return {
-    total_shots,
-    total_errors,
-    total_winners,
-    efficiency,
-    error_rate: pctNum(total_errors, total_shots),
-    winner_rate: pctNum(total_winners, total_shots)
+    ...raw,
+    players,
+    teamView: buildTeamView(raw, players)
   };
 }
 
-function buildHeadline(player, strengths, weaknesses) {
-  const best = strengths[0]?.shot_type || "strongest shot";
-  const weak = weaknesses[0]?.shot_type || "main focus area";
-  return `${best} is currently the clearest positive pattern, while ${weak} is the main opportunity for improvement.`;
-}
+function buildTeamView(raw, players) {
+  const shotMap = {};
+  const coach = {
+    strengths: [],
+    weaknesses: [],
+    recommendations: [],
+    tactical: []
+  };
 
-function buildSummary(player, strengths, weaknesses) {
-  const best = strengths[0];
-  const weak = weaknesses[0];
+  Object.values(players).forEach(player => {
+    player.shot_summary.forEach(row => {
+      if (!shotMap[row.shot_type]) {
+        shotMap[row.shot_type] = {
+          shot_type: row.shot_type,
+          shot_count: 0,
+          error_count: 0,
+          winner_count: 0
+        };
+      }
 
-  if (!best || !weak) {
-    return `This player profile is still building, but the current dataset already shows meaningful patterns that can be used to guide training focus.`;
-  }
-
-  return `${player.player_name}'s current profile suggests that ${best.shot_type.toLowerCase()} is offering the strongest platform for positive outcomes, while ${weak.shot_type.toLowerCase()} is creating the most drag on performance. The quickest gains will come from reducing avoidable errors in the weakest areas while continuing to build around the strongest shot patterns.`;
-}
-
-function buildStrengths(rows) {
-  return rows.slice(0, 3).map(row => ({
-    title: row.shot_type,
-    body: `${row.shot_count} shots, ${row.winner_count} winners, ${row.error_count} errors, ${row.winner_rate.toFixed(1)}% winners, efficiency ${row.efficiency}.`,
-    tag: "Strength"
-  }));
-}
-
-function buildWeaknesses(rows) {
-  return rows.slice(0, 3).map(row => ({
-    title: row.shot_type,
-    body: `${row.shot_count} shots, ${row.error_count} errors, ${row.error_rate.toFixed(1)}% error rate, efficiency ${row.efficiency}.`,
-    tag: "Priority"
-  }));
-}
-
-function buildRecommendations(player, strengths, weaknesses) {
-  const best = strengths[0];
-  const weak = weaknesses[0];
-  const secondWeak = weaknesses[1];
-  const recs = [];
-
-  if (weak) {
-    recs.push({
-      title: `Reduce errors in ${weak.shot_type.toLowerCase()}`,
-      body: `Prioritise repetition, margin, and simpler decision-making in ${weak.shot_type.toLowerCase()} patterns.`
+      shotMap[row.shot_type].shot_count += row.shot_count;
+      shotMap[row.shot_type].error_count += row.error_count;
+      shotMap[row.shot_type].winner_count += row.winner_count;
     });
-  }
 
-  if (best) {
-    recs.push({
-      title: `Build around ${best.shot_type.toLowerCase()}`,
-      body: `Create more points and training drills that deliberately channel play into ${best.shot_type.toLowerCase()} situations.`
-    });
-  }
+    coach.strengths.push(...(player.coach?.strengths || []));
+    coach.weaknesses.push(...(player.coach?.weaknesses || []));
+    coach.recommendations.push(...(player.coach?.recommendations || []));
+    coach.tactical.push(...(player.coach?.tactical || []));
+  });
 
-  if (secondWeak) {
-    recs.push({
-      title: `Stabilise ${secondWeak.shot_type.toLowerCase()}`,
-      body: `Use controlled practice blocks to improve reliability and reduce point leakage in ${secondWeak.shot_type.toLowerCase()}.`
-    });
-  }
+  const shotSummary = Object.values(shotMap)
+    .map(row => ({
+      ...row,
+      error_rate: pct(row.error_count, row.shot_count),
+      winner_rate: pct(row.winner_count, row.shot_count),
+      efficiency: row.winner_count - row.error_count
+    }))
+    .sort((a, b) => b.shot_count - a.shot_count);
 
-  return recs;
+  const kpis = getTotals(shotSummary);
+  const rankedStrengths = rankStrengths(shotSummary);
+  const rankedWeaknesses = rankWeaknesses(shotSummary);
+
+  return {
+    team_name: raw.team?.team_name || "Team",
+    summary: `Across the squad, ${rankedStrengths[0]?.shot_type || "the strongest shot"} is the clearest positive platform, while ${rankedWeaknesses[0]?.shot_type || "the main weakness"} is creating the biggest drag on team performance.`,
+    best_shot: rankedStrengths[0]?.shot_type || "No clear leader",
+    priority_fix: rankedWeaknesses[0]?.shot_type || "No clear priority",
+    shot_summary: shotSummary,
+    kpis,
+    strengths: buildStrengths(rankedStrengths),
+    weaknesses: buildWeaknesses(rankedWeaknesses),
+    recommendations: buildRecommendations(rankedStrengths, rankedWeaknesses),
+    coach,
+    players: Object.values(players)
+  };
 }
 
 function initDashboard() {
   const playerSelect = document.getElementById("playerSelect");
-  const keys = Object.keys(appData.players);
+  const viewModeSelect = document.getElementById("viewModeSelect");
+  const playerKeys = Object.keys(appData.players);
 
-  playerSelect.innerHTML = keys
+  playerSelect.innerHTML = playerKeys
     .map(key => `<option value="${key}">${appData.players[key].player_name}</option>`)
     .join("");
 
+  viewModeSelect.addEventListener("change", renderDashboard);
   playerSelect.addEventListener("change", renderDashboard);
+
   renderDashboard();
 }
 
 function renderDashboard() {
+  toggle("loadingState", false);
+
+  const isTeamView = document.getElementById("viewModeSelect").value === "team";
   const playerKey = document.getElementById("playerSelect").value;
   const player = appData.players[playerKey];
-  if (!player) return;
+  const subject = isTeamView ? appData.teamView : player;
 
-  setVisible("loadingState", false);
+  document.getElementById("playerControlWrap").style.display = isTeamView ? "none" : "flex";
+  document.getElementById("reportLink").style.display = isTeamView ? "none" : "inline-flex";
+  document.getElementById("heroEyebrow").textContent = isTeamView ? "Team static analysis" : "Player static analysis";
+  document.getElementById("heroPlayerName").textContent = isTeamView ? subject.team_name : subject.player_name;
+  document.getElementById("heroSummary").textContent = subject.summary;
+  document.getElementById("heroBestLabel").textContent = isTeamView ? "Best team shot" : "Best shot";
+  document.getElementById("heroPriorityLabel").textContent = isTeamView ? "Team priority fix" : "Priority fix";
+  document.getElementById("heroBestShot").textContent = subject.best_shot;
+  document.getElementById("heroPriorityFix").textContent = subject.priority_fix;
 
-  document.getElementById("heroPlayerName").textContent = player.player_name;
-  document.getElementById("heroSummary").textContent = player.summary;
-  document.getElementById("heroBestShot").textContent = player.best_shot;
-  document.getElementById("heroPriorityFix").textContent = player.priority_fix;
-  document.getElementById("reportLink").href = `report.html?player=${player.player_key}`;
+  if (!isTeamView) {
+    document.getElementById("reportLink").href = `report.html?player=${player.player_key}`;
+  }
 
-  renderDashboardKpis(player);
-  renderStrengthsWeaknesses(player);
-  renderCoachInsightsDashboard(player);
-  renderDetailTable(player);
-  renderDashboardCharts(player);
+  renderKpis(subject.kpis, "kpiGrid");
+  renderChartSet(subject, false);
+
+  document.getElementById("strengthsList").innerHTML = subject.strengths.map(x => stackItem(x, "good")).join("");
+  document.getElementById("weaknessesList").innerHTML = subject.weaknesses.map(x => stackItem(x, "bad")).join("");
+  document.getElementById("coachStrengthsList").innerHTML = renderCoachList(subject.coach?.strengths || [], "Strength", "good");
+  document.getElementById("coachWeaknessesList").innerHTML = renderCoachList(subject.coach?.weaknesses || [], "Priority", "bad");
+  document.getElementById("coachRecommendationsList").innerHTML = renderCoachList(subject.coach?.recommendations || [], "Recommendation", "warn");
+  document.getElementById("tacticalList").innerHTML = renderCoachList(subject.coach?.tactical || [], "Tactical", "warn");
+  document.getElementById("detailTitle").textContent = isTeamView ? "Team shot detail" : "Shot detail";
+  document.getElementById("detailTableBody").innerHTML = renderDetailRows(subject.shot_summary);
+
+  const comparisonPanel = document.getElementById("playerComparisonPanel");
+  if (comparisonPanel) {
+    comparisonPanel.style.display = isTeamView ? "block" : "none";
+    document.getElementById("playerComparisonBody").innerHTML = isTeamView ? renderPlayerComparisonRows(appData.teamView.players) : "";
+  }
+
+  const benchmarkBody = document.getElementById("benchmarkBody");
+  if (benchmarkBody) {
+    benchmarkBody.innerHTML = isTeamView
+      ? `<tr><td colspan="5">Benchmarking is shown on individual player views.</td></tr>`
+      : renderBenchmarkRows(player.benchmarkRows);
+  }
 }
 
-function renderDashboardKpis(player) {
-  const k = player.kpis;
-  document.getElementById("kpiGrid").innerHTML = `
-    ${kpiCard("Total Shots", k.total_shots, "All recorded shots")}
-    ${kpiCard("Winners", k.total_winners, `${k.winner_rate.toFixed(1)}% winner rate`)}
-    ${kpiCard("Errors", k.total_errors, `${k.error_rate.toFixed(1)}% error rate`)}
-    ${kpiCard("Efficiency", k.efficiency, "Winners minus errors")}
+function initReport() {
+  toggle("reportLoadingState", false);
+
+  const params = new URLSearchParams(window.location.search);
+  const playerKey = params.get("player");
+  const player = appData.players[playerKey];
+
+  if (!player) {
+    toggle("reportErrorState", true);
+    return;
+  }
+
+  document.getElementById("reportPlayerName").textContent = player.player_name;
+  document.getElementById("reportHeadline").textContent = player.headline;
+  document.getElementById("reportSummary").textContent = player.summary;
+  document.getElementById("reportBestShot").textContent = player.best_shot;
+  document.getElementById("reportPriorityFix").textContent = player.priority_fix;
+  document.getElementById("reportTotalShots").textContent = player.kpis.total_shots;
+  document.getElementById("reportEfficiency").textContent = player.kpis.efficiency;
+
+  renderKpis(player.kpis, "reportKpis");
+  renderChartSet(player, true);
+
+  document.getElementById("reportStrengths").innerHTML = player.strengths.map(x => stackItem(x, "good")).join("");
+  document.getElementById("reportWeaknesses").innerHTML = player.weaknesses.map(x => stackItem(x, "bad")).join("");
+  document.getElementById("reportCoachStrengths").innerHTML = renderCoachList(player.coach?.strengths || [], "Strength", "good");
+  document.getElementById("reportCoachWeaknesses").innerHTML = renderCoachList(player.coach?.weaknesses || [], "Priority", "bad");
+  document.getElementById("reportCoachTactical").innerHTML = renderCoachList(player.coach?.tactical || [], "Tactical", "warn");
+  document.getElementById("reportCoachRecommendations").innerHTML = renderCoachList(player.coach?.recommendations || [], "Recommendation", "warn");
+
+  document.getElementById("reportRecommendations").innerHTML = player.recommendations
+    .map(item => `
+      <div class="stack-item">
+        <span class="stack-item-tag tag-warn">Recommendation</span>
+        <div class="stack-item-title">${item.title}</div>
+        <div class="stack-item-body">${item.body}</div>
+      </div>
+    `)
+    .join("");
+
+  document.getElementById("reportBenchmarkBody").innerHTML = renderBenchmarkRows(player.benchmarkRows);
+  document.getElementById("reportDetailBody").innerHTML = renderDetailRows(player.shot_summary);
+}
+
+function renderKpis(kpis, targetId) {
+  document.getElementById(targetId).innerHTML = `
+    ${kpiCard("Total Shots", kpis.total_shots, "All recorded shots")}
+    ${kpiCard("Winners", kpis.total_winners, `${kpis.winner_rate.toFixed(1)}% winner rate`)}
+    ${kpiCard("Errors", kpis.total_errors, `${kpis.error_rate.toFixed(1)}% error rate`)}
+    ${kpiCard("Efficiency", kpis.efficiency, "Winners minus errors")}
   `;
 }
 
-function renderStrengthsWeaknesses(player) {
-  document.getElementById("strengthsList").innerHTML = player.strengths.map(item => stackItem(item, "good")).join("");
-  document.getElementById("weaknessesList").innerHTML = player.weaknesses.map(item => stackItem(item, "bad")).join("");
-}
+function renderChartSet(subject, isReport) {
+  const labels = subject.shot_summary.map(x => x.shot_type);
+  const shotCounts = subject.shot_summary.map(x => x.shot_count);
+  const errors = subject.shot_summary.map(x => x.error_count);
+  const winners = subject.shot_summary.map(x => x.winner_count);
 
-function renderCoachInsightsDashboard(player) {
-  document.getElementById("coachStrengthsList").innerHTML = renderCoachList(player.coach.strengths, "Strength", "good");
-  document.getElementById("coachWeaknessesList").innerHTML = renderCoachList(player.coach.weaknesses, "Priority", "bad");
-  document.getElementById("coachRecommendationsList").innerHTML = renderCoachList(player.coach.recommendations, "Recommendation", "warn");
-}
+  const registry = isReport ? reportCharts : dashboardCharts;
 
-function renderCoachList(items, label, mode) {
-  if (!items || !items.length) {
-    return `
-      <div class="stack-item">
-        <span class="stack-item-tag ${modeClass(mode)}">${label}</span>
-        <div class="stack-item-body">No coach insight recorded yet.</div>
-      </div>
-    `;
-  }
+  destroyChart(registry.shot);
+  destroyChart(registry.error);
+  if (!isReport) destroyChart(registry.winner);
 
-  return items.map(text => `
-    <div class="stack-item">
-      <span class="stack-item-tag ${modeClass(mode)}">${label}</span>
-      <div class="stack-item-body">${text}</div>
-    </div>
-  `).join("");
-}
-
-function modeClass(mode) {
-  if (mode === "good") return "tag-good";
-  if (mode === "bad") return "tag-bad";
-  return "tag-warn";
-}
-
-function renderDetailTable(player) {
-  document.getElementById("detailTableBody").innerHTML = player.shot_summary.map(row => `
-    <tr>
-      <td>${row.shot_type}</td>
-      <td>${row.shot_count}</td>
-      <td>${row.error_count}</td>
-      <td>${row.winner_count}</td>
-      <td>${row.error_rate.toFixed(1)}%</td>
-      <td>${row.winner_rate.toFixed(1)}%</td>
-      <td class="${row.efficiency >= 0 ? "positive" : "negative"}">${row.efficiency}</td>
-    </tr>
-  `).join("");
-}
-
-function renderDashboardCharts(player) {
-  const labels = player.shot_summary.map(x => x.shot_type);
-  const counts = player.shot_summary.map(x => x.shot_count);
-  const errors = player.shot_summary.map(x => x.error_count);
-  const winners = player.shot_summary.map(x => x.winner_count);
-
-  destroyChart(dashboardCharts.shot);
-  destroyChart(dashboardCharts.error);
-  destroyChart(dashboardCharts.winner);
-
-  dashboardCharts.shot = new Chart(document.getElementById("shotChart"), {
+  registry.shot = new Chart(document.getElementById(isReport ? "reportShotChart" : "shotChart"), {
     type: "doughnut",
     data: {
       labels,
       datasets: [{
-        data: counts,
+        data: shotCounts,
         backgroundColor: palette.slice(0, labels.length),
-        borderColor: "#0b1d2d",
+        borderColor: isReport ? "#ffffff" : "#0b1d2d",
         borderWidth: 2
       }]
     },
-    options: doughnutOptions()
+    options: doughnutOptions(isReport)
   });
 
-  dashboardCharts.error = new Chart(document.getElementById("errorChart"), {
+  registry.error = new Chart(document.getElementById(isReport ? "reportErrorChart" : "errorChart"), {
     type: "bar",
     data: {
       labels,
@@ -388,67 +291,144 @@ function renderDashboardCharts(player) {
         borderRadius: 8
       }]
     },
-    options: barOptions()
+    options: barOptions(isReport)
   });
 
-  dashboardCharts.winner = new Chart(document.getElementById("winnerChart"), {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [{
-        label: "Winners",
-        data: winners,
-        backgroundColor: "#49acd9",
-        borderRadius: 8
-      }]
-    },
-    options: barOptions()
-  });
+  if (!isReport) {
+    registry.winner = new Chart(document.getElementById("winnerChart"), {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "Winners",
+          data: winners,
+          backgroundColor: "#49acd9",
+          borderRadius: 8
+        }]
+      },
+      options: barOptions(false)
+    });
+  }
 }
 
-function initReport() {
-  const params = new URLSearchParams(window.location.search);
-  const playerKey = params.get("player");
-  const player = appData.players[playerKey];
-  if (!player) {
-    setVisible("reportLoadingState", false);
-    setVisible("reportErrorState", true);
-    return;
+function buildBenchmarkRows(player, shotSummary, kpis, benchmarkSet) {
+  if (!benchmarkSet) return [];
+
+  const shotMetric = shotType => shotSummary.find(x => x.shot_type === shotType)?.error_rate ?? null;
+
+  const metrics = [
+    ["overall_error_rate", kpis.error_rate],
+    ["overall_winner_rate", kpis.winner_rate],
+    ["efficiency", kpis.efficiency],
+    ["forehand_error_rate", shotMetric("Forehand")],
+    ["backhand_error_rate", shotMetric("Backhand")],
+    ["forehand_volley_error_rate", shotMetric("Forehand Volley")],
+    ["backhand_volley_error_rate", shotMetric("Backhand Volley")],
+    ["overhead_error_rate", shotMetric("Overhead")],
+    ["return_forehand_error_rate", shotMetric("Return of Serve Forehand")],
+    ["return_backhand_error_rate", shotMetric("Return of Serve Backhand")]
+  ];
+
+  return metrics
+    .filter(([key, current]) => current !== null && benchmarkSet[key])
+    .map(([key, current]) => {
+      const benchmark = benchmarkSet[key];
+      const gap = benchmark.direction === "lower"
+        ? current - benchmark.target
+        : benchmark.target - current;
+
+      return {
+        label: benchmark.label,
+        current,
+        target: benchmark.target,
+        gap,
+        priority: Math.abs(gap) >= 12 ? "Very High" :
+                  Math.abs(gap) >= 6 ? "High" :
+                  Math.abs(gap) >= 3 ? "Medium" : "Low"
+      };
+    })
+    .sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap));
+}
+
+function getTotals(rows) {
+  const total_shots = rows.reduce((a, b) => a + b.shot_count, 0);
+  const total_errors = rows.reduce((a, b) => a + b.error_count, 0);
+  const total_winners = rows.reduce((a, b) => a + b.winner_count, 0);
+
+  return {
+    total_shots,
+    total_errors,
+    total_winners,
+    efficiency: total_winners - total_errors,
+    error_rate: pct(total_errors, total_shots),
+    winner_rate: pct(total_winners, total_shots)
+  };
+}
+
+function rankStrengths(rows) {
+  return [...rows]
+    .filter(x => x.shot_count >= 2)
+    .sort((a, b) =>
+      ((b.winner_rate * 1.2) - (b.error_rate * 0.8) + (b.efficiency * 8)) -
+      ((a.winner_rate * 1.2) - (a.error_rate * 0.8) + (a.efficiency * 8))
+    );
+}
+
+function rankWeaknesses(rows) {
+  return [...rows]
+    .filter(x => x.shot_count >= 2)
+    .sort((a, b) =>
+      ((b.error_rate * 1.3) - (b.winner_rate * 0.5) - (b.efficiency * 6)) -
+      ((a.error_rate * 1.3) - (a.winner_rate * 0.5) - (a.efficiency * 6))
+    );
+}
+
+function buildStrengths(rows) {
+  return rows.slice(0, 3).map(row => ({
+    title: row.shot_type,
+    body: `${row.shot_count} shots, ${row.winner_count} winners, ${row.error_count} errors, ${row.winner_rate.toFixed(1)}% winners, efficiency ${row.efficiency}.`
+  }));
+}
+
+function buildWeaknesses(rows) {
+  return rows.slice(0, 3).map(row => ({
+    title: row.shot_type,
+    body: `${row.shot_count} shots, ${row.error_count} errors, ${row.error_rate.toFixed(1)}% error rate, efficiency ${row.efficiency}.`
+  }));
+}
+
+function buildRecommendations(strengths, weaknesses) {
+  const best = strengths[0];
+  const weak = weaknesses[0];
+  const secondWeak = weaknesses[1];
+  const out = [];
+
+  if (weak) {
+    out.push({
+      title: `Reduce errors in ${weak.title.toLowerCase()}`,
+      body: `Prioritise repetition, margin, and simpler decision-making in ${weak.title.toLowerCase()} patterns.`
+    });
   }
 
-  setVisible("reportLoadingState", false);
+  if (best) {
+    out.push({
+      title: `Build around ${best.title.toLowerCase()}`,
+      body: `Create more points and training drills that deliberately channel play into ${best.title.toLowerCase()} situations.`
+    });
+  }
 
-  document.getElementById("reportPlayerName").textContent = player.player_name;
-  document.getElementById("reportHeadline").textContent = player.headline;
-  document.getElementById("reportSummary").textContent = player.summary;
-  document.getElementById("reportBestShot").textContent = player.best_shot;
-  document.getElementById("reportPriorityFix").textContent = player.priority_fix;
-  document.getElementById("reportTotalShots").textContent = player.kpis.total_shots;
-  document.getElementById("reportEfficiency").textContent = player.kpis.efficiency;
+  if (secondWeak) {
+    out.push({
+      title: `Stabilise ${secondWeak.title.toLowerCase()}`,
+      body: `Use controlled practice blocks to improve reliability and reduce point leakage in ${secondWeak.title.toLowerCase()}.`
+    });
+  }
 
-  document.getElementById("reportKpis").innerHTML = `
-    ${kpiCard("Total Shots", player.kpis.total_shots, "All recorded shots")}
-    ${kpiCard("Winners", player.kpis.total_winners, `${player.kpis.winner_rate.toFixed(1)}% winner rate`)}
-    ${kpiCard("Errors", player.kpis.total_errors, `${player.kpis.error_rate.toFixed(1)}% error rate`)}
-    ${kpiCard("Efficiency", player.kpis.efficiency, "Winners minus errors")}
-  `;
+  return out;
+}
 
-  document.getElementById("reportStrengths").innerHTML = player.strengths.map(item => stackItem(item, "good")).join("");
-  document.getElementById("reportWeaknesses").innerHTML = player.weaknesses.map(item => stackItem(item, "bad")).join("");
-
-  document.getElementById("reportCoachStrengths").innerHTML = renderCoachList(player.coach.strengths, "Strength", "good");
-  document.getElementById("reportCoachWeaknesses").innerHTML = renderCoachList(player.coach.weaknesses, "Priority", "bad");
-  document.getElementById("reportCoachRecommendations").innerHTML = renderCoachList(player.coach.recommendations, "Recommendation", "warn");
-
-  document.getElementById("reportRecommendations").innerHTML = player.recommendations.map(item => `
-    <div class="stack-item">
-      <span class="stack-item-tag tag-warn">Recommendation</span>
-      <div class="stack-item-title">${item.title}</div>
-      <div class="stack-item-body">${item.body}</div>
-    </div>
-  `).join("");
-
-  document.getElementById("reportDetailBody").innerHTML = player.shot_summary.map(row => `
+function renderDetailRows(rows) {
+  return rows.map(row => `
     <tr>
       <td>${row.shot_type}</td>
       <td>${row.shot_count}</td>
@@ -459,89 +439,64 @@ function initReport() {
       <td class="${row.efficiency >= 0 ? "positive" : "negative"}">${row.efficiency}</td>
     </tr>
   `).join("");
-
-  const labels = player.shot_summary.map(x => x.shot_type);
-
-  destroyChart(reportCharts.shot);
-  destroyChart(reportCharts.error);
-
-  reportCharts.shot = new Chart(document.getElementById("reportShotChart"), {
-    type: "doughnut",
-    data: {
-      labels,
-      datasets: [{
-        data: player.shot_summary.map(x => x.shot_count),
-        backgroundColor: palette.slice(0, labels.length),
-        borderColor: "#ffffff",
-        borderWidth: 2
-      }]
-    },
-    options: doughnutOptions(true)
-  });
-
-  reportCharts.error = new Chart(document.getElementById("reportErrorChart"), {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [{
-        label: "Errors",
-        data: player.shot_summary.map(x => x.error_count),
-        backgroundColor: "#ff6b6b",
-        borderRadius: 8
-      }]
-    },
-    options: barOptions(true)
-  });
 }
 
-function doughnutOptions(light = false) {
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top",
-        labels: {
-          color: light ? "#12253f" : "#edf4ff",
-          boxWidth: 18,
-          padding: 16,
-          font: { family: "Inter", size: 12, weight: "600" }
-        }
-      }
-    }
-  };
+function renderPlayerComparisonRows(players) {
+  return players.map(player => `
+    <tr>
+      <td>${player.player_name}</td>
+      <td>${player.kpis.total_shots}</td>
+      <td>${player.kpis.total_winners}</td>
+      <td>${player.kpis.total_errors}</td>
+      <td>${player.kpis.winner_rate.toFixed(1)}%</td>
+      <td>${player.kpis.error_rate.toFixed(1)}%</td>
+      <td class="${player.kpis.efficiency >= 0 ? "positive" : "negative"}">${player.kpis.efficiency}</td>
+      <td>${player.best_shot}</td>
+      <td>${player.priority_fix}</td>
+    </tr>
+  `).join("");
 }
 
-function barOptions(light = false) {
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          color: light ? "#12253f" : "#edf4ff",
-          font: { family: "Inter", size: 12, weight: "600" }
-        }
-      }
-    },
-    scales: {
-      x: {
-        ticks: {
-          color: light ? "#6f8299" : "#a8bfd8",
-          font: { family: "Inter", size: 11 }
-        },
-        grid: { color: light ? "#eef3f8" : "rgba(255,255,255,0.04)" }
-      },
-      y: {
-        beginAtZero: true,
-        ticks: {
-          color: light ? "#6f8299" : "#a8bfd8",
-          font: { family: "Inter", size: 11 }
-        },
-        grid: { color: light ? "#eef3f8" : "rgba(255,255,255,0.05)" }
-      }
-    }
-  };
+function renderBenchmarkRows(rows) {
+  if (!rows?.length) {
+    return `<tr><td colspan="5">No benchmark rows available.</td></tr>`;
+  }
+
+  return rows.map(row => `
+    <tr>
+      <td>${row.label}</td>
+      <td>${formatMetric(row.current)}</td>
+      <td>${formatMetric(row.target)}</td>
+      <td class="${Math.abs(row.gap) >= 6 ? "negative" : ""}">${signed(row.gap)}</td>
+      <td>${row.priority}</td>
+    </tr>
+  `).join("");
+}
+
+function renderCoachList(items, label, mode) {
+  if (!items?.length) {
+    return `
+      <div class="stack-item">
+        <span class="stack-item-tag ${modeClass(mode)}">${label}</span>
+        <div class="stack-item-body">No coach insight recorded yet.</div>
+      </div>
+    `;
+  }
+
+  return items.map(item => `
+    <div class="stack-item">
+      <span class="stack-item-tag ${modeClass(mode)}">${label}${item.priority ? ` P${item.priority}` : ""}</span>
+      <div class="stack-item-title">${item.theme || label}</div>
+      <div class="stack-item-body">${item.observation || ""}</div>
+      ${item.action ? `<div class="stack-item-body" style="margin-top:8px;"><strong>Action:</strong> ${item.action}</div>` : ""}
+    </div>
+  `).join("");
+}
+
+function modeClass(mode) {
+  if (mode === "good") return "tag-good";
+  if (mode === "bad") return "tag-bad";
+  return "tag-warn";
 }
 
 function kpiCard(label, value, sub) {
@@ -557,6 +512,7 @@ function kpiCard(label, value, sub) {
 function stackItem(item, mode) {
   const tagClass = mode === "good" ? "tag-good" : "tag-bad";
   const tagText = mode === "good" ? "Strength" : "Priority";
+
   return `
     <div class="stack-item">
       <span class="stack-item-tag ${tagClass}">${tagText}</span>
@@ -566,16 +522,67 @@ function stackItem(item, mode) {
   `;
 }
 
-function pctNum(n, d) {
+function doughnutOptions(isLight) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top",
+        labels: {
+          color: isLight ? "#12253f" : "#edf4ff",
+          boxWidth: 18,
+          padding: 16,
+          font: { family: "Inter", size: 12, weight: "600" }
+        }
+      }
+    }
+  };
+}
+
+function barOptions(isLight) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: isLight ? "#12253f" : "#edf4ff",
+          font: { family: "Inter", size: 12, weight: "600" }
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: isLight ? "#6f8299" : "#a8bfd8" },
+        grid: { color: isLight ? "#eef3f8" : "rgba(255,255,255,0.04)" }
+      },
+      y: {
+        beginAtZero: true,
+        ticks: { color: isLight ? "#6f8299" : "#a8bfd8" },
+        grid: { color: isLight ? "#eef3f8" : "rgba(255,255,255,0.05)" }
+      }
+    }
+  };
+}
+
+function pct(n, d) {
   return d ? (n / d) * 100 : 0;
+}
+
+function formatMetric(v) {
+  return Number.isInteger(v) ? v : `${v.toFixed(1)}%`;
+}
+
+function signed(v) {
+  return (v > 0 ? "+" : "") + (Number.isInteger(v) ? v : v.toFixed(1));
 }
 
 function destroyChart(chart) {
   if (chart) chart.destroy();
 }
 
-function setVisible(id, show) {
+function toggle(id, show) {
   const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.toggle("hidden", !show);
+  if (el) el.classList.toggle("hidden", !show);
 }
