@@ -7,9 +7,10 @@ exports.handler = async function () {
   };
 
   try {
-    const [shotsRes, playersRes] = await Promise.all([
+    const [shotsRes, playersRes, coachRes] = await Promise.all([
       fetch(`https://api.airtable.com/v0/${BASE_ID}/Shots`, { headers }),
-      fetch(`https://api.airtable.com/v0/${BASE_ID}/Players`, { headers })
+      fetch(`https://api.airtable.com/v0/${BASE_ID}/Players`, { headers }),
+      fetch(`https://api.airtable.com/v0/${BASE_ID}/Coach%20Insights`, { headers })
     ]);
 
     if (!shotsRes.ok) {
@@ -22,8 +23,14 @@ exports.handler = async function () {
       return { statusCode: playersRes.status, body: text };
     }
 
+    if (!coachRes.ok) {
+      const text = await coachRes.text();
+      return { statusCode: coachRes.status, body: text };
+    }
+
     const shotsData = await shotsRes.json();
     const playersData = await playersRes.json();
+    const coachData = await coachRes.json();
 
     const playerMap = {};
     playersData.records.forEach(p => {
@@ -34,7 +41,8 @@ exports.handler = async function () {
       statusCode: 200,
       body: JSON.stringify({
         shots: shotsData.records,
-        playerMap
+        playerMap,
+        coachInsights: coachData.records
       })
     };
   } catch (err) {
