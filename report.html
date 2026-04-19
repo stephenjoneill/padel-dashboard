@@ -4,17 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Momentum Padel Player Report</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="report-body">
   <div class="report-page">
-
     <header class="report-header">
       <div class="report-brand">
         <img src="logo.png" alt="Momentum Padel" class="report-logo" />
@@ -24,10 +21,20 @@
         </div>
       </div>
 
-      <div class="report-header-actions"><span id="reportPlanBadge" class="mode-pill">Plan</span><button id="startTourBtn" class="btn btn-ghost" type="button">Start Tour</button><button id="openHelpBtn" class="btn btn-secondary" type="button">Help</button><button class="btn btn-primary print-btn" onclick="window.print()">Export PDF</button></div>
+      <div class="report-header-actions">
+        <div class="control-group">
+          <label for="reportPlanSelect">Plan</label>
+          <select id="reportPlanSelect"></select>
+        </div>
+        <span id="reportPlanBadge" class="mode-pill">Plan</span>
+        <button id="startTourBtn" class="btn btn-ghost" type="button">Start Tour</button>
+        <button id="openHelpBtn" class="btn btn-secondary" type="button">Help</button>
+        <a id="backToDashboardLink" class="btn btn-ghost" href="index.html">Dashboard</a>
+        <button class="btn btn-primary print-btn" onclick="window.print()">Export PDF</button>
+      </div>
     </header>
 
-    <section class="report-hero hero-refined" data-tour="report-hero">
+    <section class="report-hero hero-refined" data-tour="hero">
       <div class="report-headline-card">
         <div class="eyebrow">Match summary</div>
         <h2 id="reportHeadline">Loading headline...</h2>
@@ -35,26 +42,11 @@
       </div>
 
       <div class="report-meta-card">
-        <div class="meta-row">
-          <span>Best shot</span>
-          <strong id="reportBestShot">—</strong>
-        </div>
-        <div class="meta-row">
-          <span>Priority fix</span>
-          <strong id="reportPriorityFix">—</strong>
-        </div>
-        <div class="meta-row">
-          <span>Total shots</span>
-          <strong id="reportTotalShots">—</strong>
-        </div>
-        <div class="meta-row">
-          <span>Efficiency</span>
-          <strong id="reportEfficiency">—</strong>
-        </div>
-        <div class="meta-row">
-          <span>Matches tracked</span>
-          <strong id="reportMatchesTracked">—</strong>
-        </div>
+        <div class="meta-row"><span>Best shot</span><strong id="reportBestShot">—</strong></div>
+        <div class="meta-row"><span>Priority fix</span><strong id="reportPriorityFix">—</strong></div>
+        <div class="meta-row"><span>Total shots</span><strong id="reportTotalShots">—</strong></div>
+        <div class="meta-row"><span>Efficiency</span><strong id="reportEfficiency">—</strong></div>
+        <div class="meta-row"><span>Matches tracked</span><strong id="reportMatchesTracked">—</strong></div>
       </div>
     </section>
 
@@ -64,9 +56,7 @@
       <article class="report-card">
         <div class="panel-kicker">Trend layer</div>
         <div class="panel-title-row"><h3>Match trend</h3><button class="help-icon-btn" type="button" data-help-topic="trends">?</button></div>
-        <div class="chart-wrap report-chart">
-          <canvas id="reportTrendChart"></canvas>
-        </div>
+        <div class="chart-wrap report-chart"><canvas id="reportTrendChart"></canvas></div>
       </article>
 
       <article class="report-card">
@@ -102,21 +92,15 @@
       <article class="report-card">
         <div class="panel-kicker">Shot profile</div>
         <h3>Distribution</h3>
-        <div class="chart-wrap report-chart">
-          <canvas id="reportShotChart"></canvas>
-        </div>
+        <div class="chart-wrap report-chart"><canvas id="reportShotChart"></canvas></div>
       </article>
 
       <article class="report-card">
         <div class="panel-kicker">Risk profile</div>
         <h3>Errors by shot</h3>
-        <div class="chart-wrap report-chart">
-          <canvas id="reportErrorChart"></canvas>
-        </div>
+        <div class="chart-wrap report-chart"><canvas id="reportErrorChart"></canvas></div>
       </article>
     </section>
-
-
 
     <section class="report-grid" id="reportMilestonesSection">
       <article class="report-card">
@@ -138,7 +122,6 @@
       <div id="reportSessionPlanSummary" class="session-plan-summary"></div>
       <div id="reportSessionPlanBlocks" class="stack-list"></div>
     </section>
-
 
     <section class="report-grid">
       <article class="report-card">
@@ -186,10 +169,9 @@
       <div id="reportRecommendations" class="stack-list"></div>
     </section>
 
-    <section class="report-card" id="reportBenchmarkSection" data-tour="report-benchmarks">
+    <section class="report-card" id="reportBenchmarkSection" data-tour="benchmarks">
       <div class="panel-kicker">Benchmarking</div>
       <div class="panel-title-row"><h3>Level comparison</h3><button class="help-icon-btn" type="button" data-help-topic="benchmarks">?</button></div>
-
       <div class="table-wrap">
         <table>
           <thead>
@@ -209,7 +191,6 @@
     <section class="report-card">
       <div class="panel-kicker">Underlying data</div>
       <h3>Shot detail table</h3>
-
       <div class="table-wrap">
         <table>
           <thead>
@@ -230,41 +211,39 @@
 
     <div id="reportLoadingState" class="state-block">Loading player report...</div>
     <div id="reportErrorState" class="state-block state-error hidden">Unable to load report data.</div>
-
   </div>
 
-
-    <aside id="helpDrawer" class="help-drawer hidden" aria-hidden="true">
-      <div class="help-drawer-inner">
-        <div class="help-drawer-head">
-          <div>
-            <div class="panel-kicker">Help</div>
-            <h3 id="helpTitle">Help centre</h3>
-          </div>
-          <button id="closeHelpBtn" class="help-close-btn" type="button">×</button>
+  <aside id="helpDrawer" class="help-drawer hidden" aria-hidden="true">
+    <div class="help-drawer-inner">
+      <div class="help-drawer-head">
+        <div>
+          <div class="panel-kicker">Help</div>
+          <h3 id="helpTitle">Help centre</h3>
         </div>
-        <div class="help-search-wrap">
-          <input id="helpSearchInput" class="help-search-input" type="text" placeholder="Search help topics" />
-        </div>
-        <div id="helpTopicChips" class="help-topic-chips"></div>
-        <div id="helpBody" class="help-body"></div>
+        <button id="closeHelpBtn" class="help-close-btn" type="button">×</button>
       </div>
-    </aside>
+      <div class="help-search-wrap">
+        <input id="helpSearchInput" class="help-search-input" type="text" placeholder="Search help topics" />
+      </div>
+      <div id="helpTopicChips" class="help-topic-chips"></div>
+      <div id="helpBody" class="help-body"></div>
+    </div>
+  </aside>
 
-    <div id="tourOverlay" class="tour-overlay hidden" aria-hidden="true">
-      <div class="tour-backdrop"></div>
-      <div class="tour-card">
-        <div class="panel-kicker">Guided tour</div>
-        <h3 id="tourTitle">Tour</h3>
-        <p id="tourBody">Tour guidance</p>
-        <div id="tourMeta" class="tour-meta"></div>
-        <div class="tour-actions">
-          <button id="tourBackBtn" class="btn btn-secondary" type="button">Back</button>
-          <button id="tourNextBtn" class="btn btn-primary" type="button">Next</button>
-          <button id="tourSkipBtn" class="btn btn-ghost" type="button">Skip</button>
-        </div>
+  <div id="tourOverlay" class="tour-overlay hidden" aria-hidden="true">
+    <div class="tour-backdrop"></div>
+    <div class="tour-card">
+      <div class="panel-kicker">Guided tour</div>
+      <h3 id="tourTitle">Tour</h3>
+      <p id="tourBody">Tour guidance</p>
+      <div id="tourMeta" class="tour-meta"></div>
+      <div class="tour-actions">
+        <button id="tourBackBtn" class="btn btn-secondary" type="button">Back</button>
+        <button id="tourNextBtn" class="btn btn-primary" type="button">Next</button>
+        <button id="tourSkipBtn" class="btn btn-ghost" type="button">Skip</button>
       </div>
     </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
