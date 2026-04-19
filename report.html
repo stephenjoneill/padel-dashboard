@@ -1,34 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Player Report</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Momentum Padel Player Report</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css" />
 </head>
+<body class="report-body">
+  <div class="report-page">
+    <header class="report-header">
+      <div class="report-brand">
+        <img src="logo.png" alt="Momentum Padel" class="report-logo" />
+        <div>
+          <div class="report-kicker">Player Performance Report</div>
+          <h1 id="reportPlayerName">Loading...</h1>
+        </div>
+      </div>
+      <button class="btn btn-primary print-btn" onclick="window.print()">Export PDF</button>
+    </header>
 
-<body class="report">
+    <section class="report-hero">
+      <div class="report-headline-card">
+        <div class="eyebrow">Match summary</div>
+        <h2 id="reportHeadline">Loading headline...</h2>
+        <p id="reportSummary">Loading summary...</p>
+      </div>
 
-<div class="report-container">
+      <div class="report-meta-card">
+        <div class="meta-row">
+          <span>Best shot</span>
+          <strong id="reportBestShot">—</strong>
+        </div>
+        <div class="meta-row">
+          <span>Priority fix</span>
+          <strong id="reportPriorityFix">—</strong>
+        </div>
+        <div class="meta-row">
+          <span>Total shots</span>
+          <strong id="reportTotalShots">—</strong>
+        </div>
+        <div class="meta-row">
+          <span>Efficiency</span>
+          <strong id="reportEfficiency">—</strong>
+        </div>
+      </div>
+    </section>
 
-  <img src="logo.png" class="logo-report">
+    <section class="report-kpis" id="reportKpis"></section>
 
-  <h1 id="playerName"></h1>
-  <p id="headline"></p>
+    <section class="report-grid">
+      <article class="report-card">
+        <div class="panel-kicker">Shot profile</div>
+        <h3>Distribution</h3>
+        <div class="chart-wrap report-chart">
+          <canvas id="reportShotChart"></canvas>
+        </div>
+      </article>
 
-  <h3>Summary</h3>
-  <p id="summary"></p>
+      <article class="report-card">
+        <div class="panel-kicker">Risk profile</div>
+        <h3>Errors by shot</h3>
+        <div class="chart-wrap report-chart">
+          <canvas id="reportErrorChart"></canvas>
+        </div>
+      </article>
+    </section>
 
-  <h3>Strengths</h3>
-  <div id="strengths"></div>
+    <section class="report-grid">
+      <article class="report-card">
+        <div class="panel-kicker">Auto analysis</div>
+        <h3>Strengths</h3>
+        <div id="reportStrengths" class="stack-list"></div>
+      </article>
 
-  <h3>Weaknesses</h3>
-  <div id="weaknesses"></div>
+      <article class="report-card">
+        <div class="panel-kicker">Auto analysis</div>
+        <h3>Improvement areas</h3>
+        <div id="reportWeaknesses" class="stack-list"></div>
+      </article>
+    </section>
 
-  <h3>Recommendations</h3>
-  <div id="recommendations"></div>
+    <section class="report-card">
+      <div class="panel-kicker">Training focus</div>
+      <h3>Recommendations</h3>
+      <div id="reportRecommendations" class="stack-list"></div>
+    </section>
 
-</div>
+    <section class="report-card">
+      <div class="panel-kicker">Underlying data</div>
+      <h3>Shot detail table</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Shot Type</th>
+              <th>Shots</th>
+              <th>Errors</th>
+              <th>Winners</th>
+              <th>Error %</th>
+              <th>Winner %</th>
+              <th>Efficiency</th>
+            </tr>
+          </thead>
+          <tbody id="reportDetailBody"></tbody>
+        </table>
+      </div>
+    </section>
 
-<script src="app.js"></script>
+    <div id="reportLoadingState" class="state-block">Loading player report...</div>
+    <div id="reportErrorState" class="state-block state-error hidden">Unable to load report data.</div>
+  </div>
 
+  <script src="app.js"></script>
 </body>
 </html>
