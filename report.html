@@ -11,62 +11,90 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="report-body">
-  <div class="report-page">
-    <header class="report-header">
+  <div class="report-page report-page-v3">
+    <header class="report-header report-header-v3">
       <div class="report-brand">
         <img src="logo.png" alt="Momentum Padel" class="report-logo" />
         <div>
-          <div class="report-kicker">Player Performance Report</div>
+          <div class="report-kicker">Player performance report</div>
           <h1 id="reportPlayerName">Loading...</h1>
         </div>
       </div>
 
       <div class="report-header-actions">
-        <div class="control-group">
+        <div class="control-group compact-control">
           <label for="reportPlanSelect">Plan</label>
-          <select id="reportPlanSelect"></select>
+          <select id="reportPlanSelect">
+            <option value="starter">Starter</option>
+            <option value="coach_pro">Coach Pro</option>
+            <option value="elite">Elite</option>
+            <option value="custom">Custom</option>
+          </select>
         </div>
-        <span id="reportPlanBadge" class="mode-pill">Plan</span>
+        <span id="reportPlanBadge" class="mode-pill">Starter</span>
         <button id="startTourBtn" class="btn btn-ghost" type="button">Start Tour</button>
         <button id="openHelpBtn" class="btn btn-secondary" type="button">Help</button>
-        <a id="backToDashboardLink" class="btn btn-ghost" href="index.html">Dashboard</a>
+        <a class="btn btn-ghost" href="index.html">Dashboard</a>
         <button class="btn btn-primary print-btn" onclick="window.print()">Export PDF</button>
       </div>
     </header>
 
-    <section class="report-hero hero-refined" data-tour="hero">
+    <section class="report-hero hero-refined report-hero-v3" data-tour="report-hero">
       <div class="report-headline-card">
         <div class="eyebrow">Match summary</div>
         <h2 id="reportHeadline">Loading headline...</h2>
         <p id="reportSummary">Loading summary...</p>
       </div>
 
-      <div class="report-meta-card">
-        <div class="meta-row"><span>Best shot</span><strong id="reportBestShot">—</strong></div>
-        <div class="meta-row"><span>Priority fix</span><strong id="reportPriorityFix">—</strong></div>
-        <div class="meta-row"><span>Total shots</span><strong id="reportTotalShots">—</strong></div>
-        <div class="meta-row"><span>Efficiency</span><strong id="reportEfficiency">—</strong></div>
-        <div class="meta-row"><span>Matches tracked</span><strong id="reportMatchesTracked">—</strong></div>
+      <div class="report-meta-card report-meta-grid">
+        <div class="meta-row">
+          <span>Best shot</span>
+          <strong id="reportBestShot">—</strong>
+        </div>
+        <div class="meta-row">
+          <span>Priority fix</span>
+          <strong id="reportPriorityFix">—</strong>
+        </div>
+        <div class="meta-row">
+          <span>Total shots</span>
+          <strong id="reportTotalShots">—</strong>
+        </div>
+        <div class="meta-row">
+          <span>Efficiency</span>
+          <strong id="reportEfficiency">—</strong>
+        </div>
+        <div class="meta-row">
+          <span>Matches tracked</span>
+          <strong id="reportMatchesTracked">—</strong>
+        </div>
       </div>
     </section>
 
     <section class="report-kpis" id="reportKpis"></section>
 
-    <section class="report-grid" id="reportTrendSection" data-tour="trends">
+    <section class="report-grid report-grid-emphasis" id="reportTrendSection" data-tour="trends">
       <article class="report-card">
         <div class="panel-kicker">Trend layer</div>
-        <div class="panel-title-row"><h3>Match trend</h3><button class="help-icon-btn" type="button" data-help-topic="trends">?</button></div>
-        <div class="chart-wrap report-chart"><canvas id="reportTrendChart"></canvas></div>
+        <div class="panel-title-row">
+          <h3>Match trend</h3>
+          <button class="help-icon-btn" type="button" data-help-topic="trends">?</button>
+        </div>
+        <div class="chart-wrap report-chart">
+          <canvas id="reportTrendChart"></canvas>
+        </div>
       </article>
 
       <article class="report-card">
         <div class="panel-kicker">Trend layer</div>
-        <div class="panel-title-row"><h3>Trend signals</h3><button class="help-icon-btn" type="button" data-help-topic="trends">?</button></div>
+        <div class="panel-title-row">
+          <h3>Trend signals</h3>
+          <button class="help-icon-btn" type="button" data-help-topic="trends">?</button>
+        </div>
         <div id="reportTrendSignalList" class="stack-list"></div>
       </article>
     </section>
 
-    <section class="report-card" id="reportHistorySection">
+    <section class="report-card report-history-card" id="reportHistorySection">
       <div class="panel-kicker">History</div>
       <h3>Match history</h3>
       <div class="table-wrap">
@@ -88,90 +116,110 @@
       </div>
     </section>
 
-    <section class="report-grid">
+    <section class="report-grid report-grid-tight">
       <article class="report-card">
         <div class="panel-kicker">Shot profile</div>
         <h3>Distribution</h3>
-        <div class="chart-wrap report-chart"><canvas id="reportShotChart"></canvas></div>
+        <div class="chart-wrap report-chart">
+          <canvas id="reportShotChart"></canvas>
+        </div>
       </article>
 
       <article class="report-card">
         <div class="panel-kicker">Risk profile</div>
         <h3>Errors by shot</h3>
-        <div class="chart-wrap report-chart"><canvas id="reportErrorChart"></canvas></div>
+        <div class="chart-wrap report-chart">
+          <canvas id="reportErrorChart"></canvas>
+        </div>
       </article>
     </section>
 
     <section class="report-grid" id="reportMilestonesSection">
-      <article class="report-card">
+      <article class="report-card report-card-soft">
         <div class="panel-kicker">Progress</div>
         <h3>Milestones</h3>
         <div id="reportMilestoneList" class="stack-list"></div>
       </article>
 
-      <article class="report-card" id="reportRecommendedDrillsSection">
+      <article class="report-card report-card-soft" id="reportRecommendedDrillsSection">
         <div class="panel-kicker">Coach playbook</div>
-        <div class="panel-title-row"><h3>Recommended drills</h3><button class="help-icon-btn" type="button" data-help-topic="plans">?</button></div>
+        <div class="panel-title-row">
+          <h3>Recommended drills</h3>
+          <button class="help-icon-btn" type="button" data-help-topic="plans">?</button>
+        </div>
         <div id="reportRecommendedDrillList" class="stack-list"></div>
       </article>
     </section>
 
-    <section class="report-card" id="reportSessionPlanSection">
+    <section class="report-card report-card-soft" id="reportSessionPlanSection">
       <div class="panel-kicker">Next session</div>
-      <div class="panel-title-row"><h3>Ready-to-run session plan</h3><button class="help-icon-btn" type="button" data-help-topic="plans">?</button></div>
+      <div class="panel-title-row">
+        <h3>Ready-to-run session plan</h3>
+        <button class="help-icon-btn" type="button" data-help-topic="plans">?</button>
+      </div>
       <div id="reportSessionPlanSummary" class="session-plan-summary"></div>
-      <div id="reportSessionPlanBlocks" class="stack-list"></div>
+      <div id="reportSessionPlanBlocks" class="stack-list stack-list-spacious"></div>
     </section>
 
     <section class="report-grid">
-      <article class="report-card">
+      <article class="report-card report-card-soft">
         <div class="panel-kicker">Auto analysis</div>
-        <div class="panel-title-row"><h3>Strengths</h3><button class="help-icon-btn" type="button" data-help-topic="insights">?</button></div>
+        <div class="panel-title-row">
+          <h3>Strengths</h3>
+          <button class="help-icon-btn" type="button" data-help-topic="insights">?</button>
+        </div>
         <div id="reportStrengths" class="stack-list"></div>
       </article>
 
-      <article class="report-card">
+      <article class="report-card report-card-soft">
         <div class="panel-kicker">Auto analysis</div>
-        <div class="panel-title-row"><h3>Improvement areas</h3><button class="help-icon-btn" type="button" data-help-topic="insights">?</button></div>
+        <div class="panel-title-row">
+          <h3>Improvement areas</h3>
+          <button class="help-icon-btn" type="button" data-help-topic="insights">?</button>
+        </div>
         <div id="reportWeaknesses" class="stack-list"></div>
       </article>
     </section>
 
-    <section class="report-grid" id="reportCoachInsightsSection">
-      <article class="report-card">
+    <section class="report-grid report-grid-three" id="reportCoachInsightsSection">
+      <article class="report-card report-card-soft">
         <div class="panel-kicker">Coach insight</div>
         <h3>Coach strengths</h3>
         <div id="reportCoachStrengths" class="stack-list"></div>
       </article>
 
-      <article class="report-card">
+      <article class="report-card report-card-soft">
         <div class="panel-kicker">Coach insight</div>
         <h3>Coach weaknesses</h3>
         <div id="reportCoachWeaknesses" class="stack-list"></div>
       </article>
+
+      <article class="report-card report-card-soft">
+        <div class="panel-kicker">Training focus</div>
+        <h3>Coach recommendations</h3>
+        <div id="reportCoachRecommendations" class="stack-list"></div>
+      </article>
     </section>
 
-    <section class="report-card" id="reportTacticalSection">
+    <section class="report-card report-card-soft" id="reportTacticalSection">
       <div class="panel-kicker">Coach insight</div>
       <h3>Coach tactical observations</h3>
       <div id="reportCoachTactical" class="stack-list"></div>
     </section>
 
-    <section class="report-card" id="reportRecommendationsSection">
-      <div class="panel-kicker">Training focus</div>
-      <h3>Coach recommendations</h3>
-      <div id="reportCoachRecommendations" class="stack-list"></div>
-    </section>
-
-    <section class="report-card">
+    <section class="report-card report-card-soft" id="reportRecommendationsSection">
       <div class="panel-kicker">Training focus</div>
       <h3>Auto recommendations</h3>
       <div id="reportRecommendations" class="stack-list"></div>
     </section>
 
-    <section class="report-card" id="reportBenchmarkSection" data-tour="benchmarks">
+    <section class="report-card" id="reportBenchmarkSection" data-tour="report-benchmarks">
       <div class="panel-kicker">Benchmarking</div>
-      <div class="panel-title-row"><h3>Level comparison</h3><button class="help-icon-btn" type="button" data-help-topic="benchmarks">?</button></div>
+      <div class="panel-title-row">
+        <h3>Level comparison</h3>
+        <button class="help-icon-btn" type="button" data-help-topic="benchmarks">?</button>
+      </div>
+
       <div class="table-wrap">
         <table>
           <thead>
@@ -188,7 +236,7 @@
       </div>
     </section>
 
-    <section class="report-card">
+    <section class="report-card" id="reportDetailSection">
       <div class="panel-kicker">Underlying data</div>
       <h3>Shot detail table</h3>
       <div class="table-wrap">
