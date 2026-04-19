@@ -14,6 +14,7 @@
 </head>
 <body class="app-shell">
   <div class="page">
+
     <header class="topbar">
       <div class="brand">
         <img src="logo.png" alt="Momentum Padel" class="brand-logo" />
@@ -25,29 +26,37 @@
 
       <div class="topbar-actions">
         <div class="control-group">
+          <label for="viewModeSelect">View</label>
+          <select id="viewModeSelect">
+            <option value="team">Team Dashboard</option>
+            <option value="player">Player Dashboard</option>
+          </select>
+        </div>
+
+        <div class="control-group" id="playerControlWrap">
           <label for="playerSelect">Player</label>
           <select id="playerSelect"></select>
         </div>
+
         <a id="reportLink" class="btn btn-primary" href="#">View Report</a>
       </div>
     </header>
 
     <section class="hero">
       <div class="hero-copy">
-        <div class="eyebrow">Live match analysis</div>
-        <h2 id="heroPlayerName">Loading player...</h2>
-        <p id="heroSummary">
-          Analysing live Airtable data and building a premium player performance view.
-        </p>
+        <div class="eyebrow" id="heroEyebrow">Static JSON analysis</div>
+        <h2 id="heroPlayerName">Loading...</h2>
+        <p id="heroSummary">Loading summary...</p>
       </div>
 
       <div class="hero-side">
         <div class="hero-stat">
-          <span class="hero-stat-label">Best shot</span>
+          <span class="hero-stat-label" id="heroBestLabel">Best shot</span>
           <strong id="heroBestShot">—</strong>
         </div>
+
         <div class="hero-stat">
-          <span class="hero-stat-label">Priority fix</span>
+          <span class="hero-stat-label" id="heroPriorityLabel">Priority fix</span>
           <strong id="heroPriorityFix">—</strong>
         </div>
       </div>
@@ -150,8 +159,70 @@
     <section class="panel">
       <div class="panel-head">
         <div>
+          <div class="panel-kicker">Coach insight</div>
+          <h3>Tactical observations</h3>
+        </div>
+      </div>
+      <div id="tacticalList" class="stack-list"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">Benchmarking</div>
+          <h3>Level comparison</h3>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Current</th>
+              <th>Benchmark</th>
+              <th>Gap</th>
+              <th>Priority</th>
+            </tr>
+          </thead>
+          <tbody id="benchmarkBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" id="playerComparisonPanel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">Squad overview</div>
+          <h3>Player comparison</h3>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Total Shots</th>
+              <th>Winners</th>
+              <th>Errors</th>
+              <th>Winner %</th>
+              <th>Error %</th>
+              <th>Efficiency</th>
+              <th>Best Shot</th>
+              <th>Priority Fix</th>
+            </tr>
+          </thead>
+          <tbody id="playerComparisonBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
           <div class="panel-kicker">Underlying data</div>
-          <h3>Shot detail</h3>
+          <h3 id="detailTitle">Shot detail</h3>
         </div>
       </div>
 
@@ -173,8 +244,9 @@
       </div>
     </section>
 
-    <div id="loadingState" class="state-block">Loading live Airtable data...</div>
-    <div id="errorState" class="state-block state-error hidden">Unable to load Airtable data.</div>
+    <div id="loadingState" class="state-block">Loading static JSON data...</div>
+    <div id="errorState" class="state-block state-error hidden">Unable to load JSON data.</div>
+
   </div>
 
   <script src="app.js"></script>
