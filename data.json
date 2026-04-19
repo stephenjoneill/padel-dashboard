@@ -1,372 +1,39 @@
 {
-  "meta": {
-    "app_name": "Momentum Padel Performance Platform",
-    "version": "json-v2-from-raw-csv",
-    "source_mode": "static_json",
-    "source_file": "padel_import_from_uploaded_data.csv",
-    "raw_shot_count": 213
-  },
-  "team": {
-    "team_name": "Momentum Padel Squad",
-    "session_name": "Match 1",
-    "coach_name": "Kevin Cunningham"
-  },
-  "benchmarks": {
-    "beginner": {
-      "overall_error_rate": {
-        "target": 22,
-        "direction": "lower",
-        "label": "Overall Error Rate %"
-      },
-      "overall_winner_rate": {
-        "target": 8,
-        "direction": "higher",
-        "label": "Winner Rate %"
-      },
-      "efficiency": {
-        "target": -2,
-        "direction": "higher",
-        "label": "Efficiency"
-      },
-      "forehand_error_rate": {
-        "target": 24,
-        "direction": "lower",
-        "label": "Forehand Error Rate %"
-      },
-      "backhand_error_rate": {
-        "target": 28,
-        "direction": "lower",
-        "label": "Backhand Error Rate %"
-      },
-      "forehand_volley_error_rate": {
-        "target": 18,
-        "direction": "lower",
-        "label": "FH Volley Error %"
-      },
-      "backhand_volley_error_rate": {
-        "target": 24,
-        "direction": "lower",
-        "label": "BH Volley Error %"
-      },
-      "overhead_error_rate": {
-        "target": 30,
-        "direction": "lower",
-        "label": "Overhead Error %"
-      }
-    }
-  },
   "players": {
     "john": {
       "player_name": "John",
-      "level": "Beginner",
-      "headline": "Forehand is the clearest positive pattern, while backhand-side stability is the biggest opportunity for improvement.",
-      "summary": "John\u2019s current profile shows that forehand remains the strongest base for positive outcomes, while the backhand side is leaking too many errors. The quickest gains will come from reducing backhand-side damage and continuing to build around the forehand.",
+      "headline": "Strong forehand base, improving backhand consistency",
+      "summary": "John shows a reliable forehand but needs to reduce backhand errors and improve return decisions.",
       "shot_summary": [
-        {
-          "shot_type": "Forehand",
-          "shot_count": 28,
-          "error_count": 7,
-          "winner_count": 6
-        },
-        {
-          "shot_type": "First Serve",
-          "shot_count": 15,
-          "error_count": 1,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Forehand Volley",
-          "shot_count": 9,
-          "error_count": 1,
-          "winner_count": 1
-        },
-        {
-          "shot_type": "Return of Serve Forehand",
-          "shot_count": 8,
-          "error_count": 2,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Backhand",
-          "shot_count": 7,
-          "error_count": 3,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Backhand Volley",
-          "shot_count": 3,
-          "error_count": 1,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Forehand Off Glass",
-          "shot_count": 2,
-          "error_count": 0,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Overhead",
-          "shot_count": 1,
-          "error_count": 1,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Return of Serve Backhand",
-          "shot_count": 1,
-          "error_count": 0,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Backhand Off Glass",
-          "shot_count": 1,
-          "error_count": 0,
-          "winner_count": 0
-        }
-      ],
-      "coach": {
-        "strengths": [
-          {
-            "theme": "Forehand",
-            "observation": "Forehand is a real weapon and the strongest shot pattern in the current dataset.",
-            "action": "Create more points through forehand-led patterns.",
-            "priority": 1
-          }
-        ],
-        "weaknesses": [
-          {
-            "theme": "Backhand",
-            "observation": "Backhand is the weaker side and the clearest quick improvement area.",
-            "action": "Simplify backhand choices and reduce avoidable errors.",
-            "priority": 1
-          }
-        ],
-        "recommendations": [
-          {
-            "theme": "Forehand Return",
-            "observation": "Defaulting down the line is costing too much.",
-            "action": "Use the cross-court forehand return as the percentage play unless there is a clear tactical reason not to.",
-            "priority": 1
-          }
-        ],
-        "tactical": [
-          {
-            "theme": "Return Pattern",
-            "observation": "The majority of forehand errors are when playing down the line, especially on return of serve.",
-            "action": "Hit forehands cross court more often and only go down the line for surprise or to exploit a weakness.",
-            "priority": 1
-          }
-        ]
-      }
+        { "shot_type": "Forehand", "shot_count": 40, "error_count": 8, "winner_count": 10 },
+        { "shot_type": "Backhand", "shot_count": 35, "error_count": 15, "winner_count": 5 },
+        { "shot_type": "Volley", "shot_count": 20, "error_count": 6, "winner_count": 4 },
+        { "shot_type": "Overhead", "shot_count": 10, "error_count": 4, "winner_count": 3 }
+      ]
     },
-    "heidi": {
-      "player_name": "Heidi",
-      "level": "Beginner",
-      "headline": "Forehand-side quality is the clearest strength, while overheads and backhand-side defence offer the biggest gains.",
-      "summary": "Heidi\u2019s current profile has a clear forehand-side platform, especially through the forehand volley, but overheads and backhand-side defensive situations are leaking too many points. The best short-term gains will come from more patient defending and better overhead mechanics.",
-      "shot_summary": [
-        {
-          "shot_type": "Forehand",
-          "shot_count": 14,
-          "error_count": 2,
-          "winner_count": 1
-        },
-        {
-          "shot_type": "Forehand Volley",
-          "shot_count": 14,
-          "error_count": 1,
-          "winner_count": 2
-        },
-        {
-          "shot_type": "Return of Serve Forehand",
-          "shot_count": 10,
-          "error_count": 0,
-          "winner_count": 1
-        },
-        {
-          "shot_type": "Return of Serve Backhand",
-          "shot_count": 7,
-          "error_count": 3,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Overhead",
-          "shot_count": 4,
-          "error_count": 3,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Backhand Volley",
-          "shot_count": 4,
-          "error_count": 2,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Backhand",
-          "shot_count": 3,
-          "error_count": 0,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Backhand Off Glass",
-          "shot_count": 2,
-          "error_count": 2,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Forehand Off Glass",
-          "shot_count": 1,
-          "error_count": 0,
-          "winner_count": 0
-        }
-      ],
-      "coach": {
-        "strengths": [
-          {
-            "theme": "Forehand",
-            "observation": "Your forehand is your strongest shot, especially the forehand volley.",
-            "action": "Create more patterns that channel the ball onto the forehand side.",
-            "priority": 1
-          }
-        ],
-        "weaknesses": [
-          {
-            "theme": "Overhead",
-            "observation": "Overheads are a current weakness and dealing with lobs remains a genuine issue.",
-            "action": "Improve body position and contact shape under lobs.",
-            "priority": 1
-          },
-          {
-            "theme": "Backhand",
-            "observation": "Backhand-side defence is currently too error-prone, especially through returns and glass work.",
-            "action": "Simplify backhand-side patterns and prioritise control.",
-            "priority": 2
-          }
-        ],
-        "recommendations": [
-          {
-            "theme": "Defence",
-            "observation": "Patience and deeper defending will improve both positioning and shot selection.",
-            "action": "Stay back longer and only move forward after creating genuine pressure.",
-            "priority": 1
-          }
-        ],
-        "tactical": [
-          {
-            "theme": "Positioning",
-            "observation": "Too many inappropriate shots are being played from no man's land.",
-            "action": "Either stay back and defend properly or move fully forward with intent. Avoid neutral balls from transition zones.",
-            "priority": 1
-          },
-          {
-            "theme": "Defence",
-            "observation": "You are not yet fully comfortable defending deeper in the court, which is leading to rushed decisions and poor shot selection.",
-            "action": "Build confidence by staying back longer in rallies and using higher-margin defensive shots before transitioning forward.",
-            "priority": 2
-          }
-        ]
-      }
-    },
+
     "jenny": {
       "player_name": "Jenny",
-      "level": "Beginner",
-      "headline": "Volley volume is high, but forehand remains the better platform shot and consistency is the biggest development priority.",
-      "summary": "Jenny\u2019s profile shows encouraging intent to get forward, but the current data says the forehand groundstroke is the better foundation. The fastest gains will come from improved patience, better transition timing, and fewer rushed errors.",
+      "headline": "Net game improving, needs better timing and patience",
+      "summary": "Jenny is aggressive at the net but often moves forward too early, leading to avoidable errors.",
       "shot_summary": [
-        {
-          "shot_type": "Forehand Volley",
-          "shot_count": 27,
-          "error_count": 5,
-          "winner_count": 2
-        },
-        {
-          "shot_type": "Backhand Volley",
-          "shot_count": 14,
-          "error_count": 6,
-          "winner_count": 1
-        },
-        {
-          "shot_type": "Return of Serve Forehand",
-          "shot_count": 12,
-          "error_count": 3,
-          "winner_count": 1
-        },
-        {
-          "shot_type": "Forehand",
-          "shot_count": 8,
-          "error_count": 2,
-          "winner_count": 1
-        },
-        {
-          "shot_type": "Forehand Off Glass",
-          "shot_count": 7,
-          "error_count": 2,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Return of Serve Backhand",
-          "shot_count": 4,
-          "error_count": 1,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Backhand",
-          "shot_count": 4,
-          "error_count": 2,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Overhead",
-          "shot_count": 2,
-          "error_count": 1,
-          "winner_count": 0
-        },
-        {
-          "shot_type": "Backhand Off Glass",
-          "shot_count": 1,
-          "error_count": 0,
-          "winner_count": 0
-        }
-      ],
-      "coach": {
-        "strengths": [
-          {
-            "theme": "Forehand",
-            "observation": "Your groundstrokes are better than you think and the forehand is the stronger base shot.",
-            "action": "Trust the forehand more in point construction.",
-            "priority": 1
-          }
-        ],
-        "weaknesses": [
-          {
-            "theme": "Volley",
-            "observation": "Volley usage is high but the error rate is too high for it to be considered a reliable strength yet.",
-            "action": "Prioritise margin and control before trying to finish the point too early.",
-            "priority": 1
-          }
-        ],
-        "recommendations": [
-          {
-            "theme": "Patience",
-            "observation": "Patience not power is the key to padel in the current profile.",
-            "action": "Stay back and defend longer, then move forward only after creating real pressure.",
-            "priority": 1
-          }
-        ],
-        "tactical": [
-          {
-            "theme": "Positioning",
-            "observation": "You are often trying to get to the net at the wrong time, which leads to rushed shots and lower-quality contact.",
-            "action": "Take the net only after a lob, a chiquita, or when the server is genuinely under pressure.",
-            "priority": 1
-          },
-          {
-            "theme": "Shot Selection",
-            "observation": "Many errors are coming from trying to end points too quickly rather than constructing them.",
-            "action": "Extend rallies and use your groundstrokes more deliberately before pressing for the finish.",
-            "priority": 2
-          }
-        ]
-      }
+        { "shot_type": "Forehand", "shot_count": 30, "error_count": 10, "winner_count": 6 },
+        { "shot_type": "Backhand", "shot_count": 30, "error_count": 12, "winner_count": 4 },
+        { "shot_type": "Volley", "shot_count": 25, "error_count": 10, "winner_count": 6 },
+        { "shot_type": "Overhead", "shot_count": 8, "error_count": 3, "winner_count": 2 }
+      ]
+    },
+
+    "heidi": {
+      "player_name": "Heidi",
+      "headline": "Defensive stability improving, overhead still a weakness",
+      "summary": "Heidi defends well but struggles under lob pressure and needs more confidence finishing points.",
+      "shot_summary": [
+        { "shot_type": "Forehand", "shot_count": 35, "error_count": 9, "winner_count": 7 },
+        { "shot_type": "Backhand", "shot_count": 32, "error_count": 11, "winner_count": 5 },
+        { "shot_type": "Volley", "shot_count": 18, "error_count": 5, "winner_count": 3 },
+        { "shot_type": "Overhead", "shot_count": 12, "error_count": 7, "winner_count": 2 }
+      ]
     }
   }
 }
