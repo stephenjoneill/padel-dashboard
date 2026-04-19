@@ -28,15 +28,10 @@ async function loadData() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const payload = await res.json();
 
-    appData = transformData(payload.shots, payload.playerMap);
+    appData = transformData(payload.shots, payload.playerMap, payload.coachInsights || []);
 
-    if (document.getElementById("playerSelect")) {
-      initDashboard();
-    }
-
-    if (document.getElementById("reportPlayerName")) {
-      initReport();
-    }
+    if (document.getElementById("playerSelect")) initDashboard();
+    if (document.getElementById("reportPlayerName")) initReport();
 
   } catch (err) {
     console.error(err);
@@ -47,7 +42,7 @@ async function loadData() {
   }
 }
 
-function transformData(records, playerMap) {
+function transformData(records, playerMap, coachInsights) {
   const players = {};
 
   for (const r of records) {
@@ -65,7 +60,12 @@ function transformData(records, playerMap) {
       players[key] = {
         player_key: key,
         player_name: playerName,
-        shot_summary: []
+        shot_summary: [],
+        coach: {
+          strengths: [],
+          weaknesses: [],
+          recommendations: []
+        }
       };
     }
 
@@ -87,8 +87,46 @@ function transformData(records, playerMap) {
     if (result === "Forced Error" || result === "Unforced Error") existing.error_count += 1;
   }
 
+  for (const row of coachInsights) {
+    const f = row.fields || {};
+    const playerField = f.Player;
+    let playerName = null;
+
+    if (Array.isArray(playerField) && playerField.length > 0) {
+      playerName = playerMap[playerField[0]] || playerField[0];
+    } else if (typeof playerField === "string") {
+      playerName = playerField;
+    }
+
+    if (!playerName) continue;
+
+    const key = playerName.toLowerCase();
+
+    if (!players[key]) {
+      players[key] = {
+        player_key: key,
+        player_name: playerName,
+        shot_summary: [],
+        coach: {
+          strengths: [],
+          weaknesses: [],
+          recommendations: []
+        }
+      };
+    }
+
+    const strengths = splitText(f.Strengths);
+    const weaknesses = splitText(f.Weaknesses);
+    const recommendations = splitText(f.Recommendations);
+
+    players[key].coach.strengths.push(...strengths);
+    players[key].coach.weaknesses.push(...weaknesses);
+    players[key].coach.recommendations.push(...recommendations);
+  }
+
   for (const key of Object.keys(players)) {
     const player = players[key];
+
     player.shot_summary = player.shot_summary
       .map(row => ({
         ...row,
@@ -124,9 +162,25 @@ function transformData(records, playerMap) {
     player.strengths = buildStrengths(rankedStrengths);
     player.weaknesses = buildWeaknesses(rankedWeaknesses);
     player.recommendations = buildRecommendations(player, rankedStrengths, rankedWeaknesses);
+
+    player.coach.strengths = uniqueNonEmpty(player.coach.strengths);
+    player.coach.weaknesses = uniqueNonEmpty(player.coach.weaknesses);
+    player.coach.recommendations = uniqueNonEmpty(player.coach.recommendations);
   }
 
   return { players };
+}
+
+function splitText(value) {
+  if (!value) return [];
+  return String(value)
+    .split(/\n|•|- /)
+    .map(x => x.trim())
+    .filter(Boolean);
+}
+
+function uniqueNonEmpty(arr) {
+  return [...new Set((arr || []).map(x => x.trim()).filter(Boolean))];
 }
 
 function getTotals(rows) {
@@ -182,7 +236,6 @@ function buildRecommendations(player, strengths, weaknesses) {
   const best = strengths[0];
   const weak = weaknesses[0];
   const secondWeak = weaknesses[1];
-
   const recs = [];
 
   if (weak) {
@@ -236,6 +289,7 @@ function renderDashboard() {
 
   renderDashboardKpis(player);
   renderStrengthsWeaknesses(player);
+  renderCoachInsightsDashboard(player);
   renderDetailTable(player);
   renderDashboardCharts(player);
 }
@@ -253,6 +307,36 @@ function renderDashboardKpis(player) {
 function renderStrengthsWeaknesses(player) {
   document.getElementById("strengthsList").innerHTML = player.strengths.map(item => stackItem(item, "good")).join("");
   document.getElementById("weaknessesList").innerHTML = player.weaknesses.map(item => stackItem(item, "bad")).join("");
+}
+
+function renderCoachInsightsDashboard(player) {
+  document.getElementById("coachStrengthsList").innerHTML = renderCoachList(player.coach.strengths, "Strength", "good");
+  document.getElementById("coachWeaknessesList").innerHTML = renderCoachList(player.coach.weaknesses, "Priority", "bad");
+  document.getElementById("coachRecommendationsList").innerHTML = renderCoachList(player.coach.recommendations, "Recommendation", "warn");
+}
+
+function renderCoachList(items, label, mode) {
+  if (!items || !items.length) {
+    return `
+      <div class="stack-item">
+        <span class="stack-item-tag ${modeClass(mode)}">${label}</span>
+        <div class="stack-item-body">No coach insight recorded yet.</div>
+      </div>
+    `;
+  }
+
+  return items.map(text => `
+    <div class="stack-item">
+      <span class="stack-item-tag ${modeClass(mode)}">${label}</span>
+      <div class="stack-item-body">${text}</div>
+    </div>
+  `).join("");
+}
+
+function modeClass(mode) {
+  if (mode === "good") return "tag-good";
+  if (mode === "bad") return "tag-bad";
+  return "tag-warn";
 }
 
 function renderDetailTable(player) {
@@ -351,6 +435,11 @@ function initReport() {
 
   document.getElementById("reportStrengths").innerHTML = player.strengths.map(item => stackItem(item, "good")).join("");
   document.getElementById("reportWeaknesses").innerHTML = player.weaknesses.map(item => stackItem(item, "bad")).join("");
+
+  document.getElementById("reportCoachStrengths").innerHTML = renderCoachList(player.coach.strengths, "Strength", "good");
+  document.getElementById("reportCoachWeaknesses").innerHTML = renderCoachList(player.coach.weaknesses, "Priority", "bad");
+  document.getElementById("reportCoachRecommendations").innerHTML = renderCoachList(player.coach.recommendations, "Recommendation", "warn");
+
   document.getElementById("reportRecommendations").innerHTML = player.recommendations.map(item => `
     <div class="stack-item">
       <span class="stack-item-tag tag-warn">Recommendation</span>
