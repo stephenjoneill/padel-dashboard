@@ -1,46 +1,150 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Momentum Padel Dashboard</title>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.2/dist/semantic.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
+<body class="app-shell">
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <img src="logo.png" alt="Momentum Padel" class="brand-logo" />
+        <div>
+          <div class="brand-kicker">Performance Platform</div>
+          <h1>Momentum Padel Dashboard</h1>
+        </div>
+      </div>
 
-<body>
+      <div class="topbar-actions">
+        <div class="control-group">
+          <label for="playerSelect">Player</label>
+          <select id="playerSelect"></select>
+        </div>
+        <a id="reportLink" class="btn btn-primary" href="#">View Report</a>
+      </div>
+    </header>
 
-<div class="ui container">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Live match analysis</div>
+        <h2 id="heroPlayerName">Loading player...</h2>
+        <p id="heroSummary">
+          Analysing live Airtable data and building a premium player performance view.
+        </p>
+      </div>
 
-  <div class="ui segment header-bar">
-    <img src="logo.png" class="logo">
-    <h2>Momentum Padel Dashboard</h2>
+      <div class="hero-side">
+        <div class="hero-stat">
+          <span class="hero-stat-label">Best shot</span>
+          <strong id="heroBestShot">—</strong>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-label">Priority fix</span>
+          <strong id="heroPriorityFix">—</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="kpi-grid" id="kpiGrid"></section>
+
+    <section class="content-grid">
+      <article class="panel panel-large">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Shot profile</div>
+            <h3>Distribution by shot type</h3>
+          </div>
+        </div>
+        <div class="chart-wrap doughnut-wrap">
+          <canvas id="shotChart"></canvas>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Risk profile</div>
+            <h3>Errors by shot</h3>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="errorChart"></canvas>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Conversion</div>
+            <h3>Winners by shot</h3>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="winnerChart"></canvas>
+        </div>
+      </article>
+    </section>
+
+    <section class="two-col">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Auto analysis</div>
+            <h3>Strengths</h3>
+          </div>
+        </div>
+        <div id="strengthsList" class="stack-list"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">Auto analysis</div>
+            <h3>Improvement areas</h3>
+          </div>
+        </div>
+        <div id="weaknessesList" class="stack-list"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">Underlying data</div>
+          <h3>Shot detail</h3>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Shot Type</th>
+              <th>Shots</th>
+              <th>Errors</th>
+              <th>Winners</th>
+              <th>Error %</th>
+              <th>Winner %</th>
+              <th>Efficiency</th>
+            </tr>
+          </thead>
+          <tbody id="detailTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div id="loadingState" class="state-block">Loading live Airtable data...</div>
+    <div id="errorState" class="state-block state-error hidden">Unable to load Airtable data.</div>
   </div>
 
-  <div class="ui grid">
-    <div class="eight wide column">
-      <select id="playerSelect" class="ui dropdown"></select>
-    </div>
-    <div class="eight wide column right aligned">
-      <a id="reportLink" class="ui primary button">View Report</a>
-    </div>
-  </div>
-
-  <div class="ui four column grid" id="kpiGrid"></div>
-
-  <div class="ui grid">
-    <div class="eight wide column">
-      <canvas id="shotChart"></canvas>
-    </div>
-    <div class="eight wide column">
-      <canvas id="errorChart"></canvas>
-    </div>
-  </div>
-
-</div>
-
-<script src="app.js"></script>
-
+  <script src="app.js"></script>
 </body>
 </html>
