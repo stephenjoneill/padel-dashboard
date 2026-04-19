@@ -16,8 +16,8 @@
       <div class="brand">
         <img src="logo.png" alt="Momentum Padel" class="brand-logo" />
         <div>
-          <div class="brand-kicker">Performance Platform</div>
-          <h1>Momentum Padel Dashboard</h1>
+          <div id="brandKicker" class="brand-kicker">Performance Platform</div>
+          <h1 id="appTitle">Momentum Padel Dashboard</h1>
         </div>
       </div>
 
@@ -35,6 +35,11 @@
           <select id="playerSelect"></select>
         </div>
 
+        <div class="control-group">
+          <label for="planSelect">Plan</label>
+          <select id="planSelect"></select>
+        </div>
+
         <span id="dashboardPlanBadge" class="mode-pill">PLAN</span>
         <button id="settingsToggleBtn" class="btn btn-ghost" type="button">Settings</button>
         <button id="startTourBtn" class="btn btn-ghost" type="button">Start Tour</button>
@@ -44,25 +49,19 @@
     </header>
 
     <section id="settingsPanel" class="settings-panel hidden">
-      <div class="panel-head">
+      <div class="settings-head">
         <div>
           <div class="panel-kicker">Product controls</div>
           <h3>Settings</h3>
         </div>
       </div>
       <div class="settings-grid">
-        <div class="control-group">
-          <label for="planSelect">Subscription plan</label>
-          <select id="planSelect">
-            <option value="starter">Starter</option>
-            <option value="coach_pro">Coach Pro</option>
-            <option value="elite">Elite</option>
-            <option value="custom">Custom</option>
-          </select>
+        <div class="settings-card">
+          <span class="settings-card-title">Current configuration</span>
+          <div id="settingsSummary" class="settings-summary"></div>
         </div>
-        <div id="settingsSummary" class="settings-summary"></div>
+        <div id="featureToggleList" class="feature-toggle-list"></div>
       </div>
-      <div id="featureToggleList" class="feature-toggle-list"></div>
       <div class="settings-actions">
         <button id="settingsResetBtn" class="btn btn-secondary" type="button">Reset settings</button>
       </div>
@@ -180,8 +179,6 @@
         </table>
       </div>
     </section>
-
-
 
     <section class="two-col" id="milestonesSection">
       <article class="panel">
@@ -359,37 +356,37 @@
     <div id="errorState" class="state-block state-error hidden">Unable to load JSON data.</div>
   </div>
 
-    <aside id="helpDrawer" class="help-drawer hidden" aria-hidden="true">
-      <div class="help-drawer-inner">
-        <div class="help-drawer-head">
-          <div>
-            <div class="panel-kicker">Help</div>
-            <h3 id="helpTitle">Help centre</h3>
-          </div>
-          <button id="closeHelpBtn" class="help-close-btn" type="button">×</button>
+  <aside id="helpDrawer" class="help-drawer hidden" aria-hidden="true">
+    <div class="help-drawer-inner">
+      <div class="help-drawer-head">
+        <div>
+          <div class="panel-kicker">Help</div>
+          <h3 id="helpTitle">Help centre</h3>
         </div>
-        <div class="help-search-wrap">
-          <input id="helpSearchInput" class="help-search-input" type="text" placeholder="Search help topics" />
-        </div>
-        <div id="helpTopicChips" class="help-topic-chips"></div>
-        <div id="helpBody" class="help-body"></div>
+        <button id="closeHelpBtn" class="help-close-btn" type="button">×</button>
       </div>
-    </aside>
+      <div class="help-search-wrap">
+        <input id="helpSearchInput" class="help-search-input" type="text" placeholder="Search help topics" />
+      </div>
+      <div id="helpTopicChips" class="help-topic-chips"></div>
+      <div id="helpBody" class="help-body"></div>
+    </div>
+  </aside>
 
-    <div id="tourOverlay" class="tour-overlay hidden" aria-hidden="true">
-      <div class="tour-backdrop"></div>
-      <div class="tour-card">
-        <div class="panel-kicker">Guided tour</div>
-        <h3 id="tourTitle">Tour</h3>
-        <p id="tourBody">Tour guidance</p>
-        <div id="tourMeta" class="tour-meta"></div>
-        <div class="tour-actions">
-          <button id="tourBackBtn" class="btn btn-secondary" type="button">Back</button>
-          <button id="tourNextBtn" class="btn btn-primary" type="button">Next</button>
-          <button id="tourSkipBtn" class="btn btn-ghost" type="button">Skip</button>
-        </div>
+  <div id="tourOverlay" class="tour-overlay hidden" aria-hidden="true">
+    <div class="tour-backdrop"></div>
+    <div class="tour-card">
+      <div class="panel-kicker">Guided tour</div>
+      <h3 id="tourTitle">Tour</h3>
+      <p id="tourBody">Tour guidance</p>
+      <div id="tourMeta" class="tour-meta"></div>
+      <div class="tour-actions">
+        <button id="tourBackBtn" class="btn btn-secondary" type="button">Back</button>
+        <button id="tourNextBtn" class="btn btn-primary" type="button">Next</button>
+        <button id="tourSkipBtn" class="btn btn-ghost" type="button">Skip</button>
       </div>
     </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
