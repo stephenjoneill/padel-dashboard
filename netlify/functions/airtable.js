@@ -1,5 +1,4 @@
 exports.handler = async function () {
-
   const BASE_ID = process.env.AIRTABLE_BASE_ID;
   const TOKEN = process.env.AIRTABLE_TOKEN;
 
@@ -8,16 +7,24 @@ exports.handler = async function () {
   };
 
   try {
+    const [shotsRes, playersRes] = await Promise.all([
+      fetch(`https://api.airtable.com/v0/${BASE_ID}/Shots`, { headers }),
+      fetch(`https://api.airtable.com/v0/${BASE_ID}/Players`, { headers })
+    ]);
 
-    // Fetch Shots
-    const shotsRes = await fetch(`https://api.airtable.com/v0/${BASE_ID}/Shots`, { headers });
+    if (!shotsRes.ok) {
+      const text = await shotsRes.text();
+      return { statusCode: shotsRes.status, body: text };
+    }
+
+    if (!playersRes.ok) {
+      const text = await playersRes.text();
+      return { statusCode: playersRes.status, body: text };
+    }
+
     const shotsData = await shotsRes.json();
-
-    // Fetch Players
-    const playersRes = await fetch(`https://api.airtable.com/v0/${BASE_ID}/Players`, { headers });
     const playersData = await playersRes.json();
 
-    // Build Player ID → Name map
     const playerMap = {};
     playersData.records.forEach(p => {
       playerMap[p.id] = p.fields.Name;
@@ -30,11 +37,12 @@ exports.handler = async function () {
         playerMap
       })
     };
-
   } catch (err) {
     return {
       statusCode: 500,
-      body: err.toString()
+      body: JSON.stringify({
+        error: String(err)
+      })
     };
   }
 };
