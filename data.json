@@ -1,0 +1,16 @@
+{
+  "players": {
+    "john": {
+      "player_name": "John",
+      "headline_summary": "Forehand is a weapon",
+      "overall_summary": "John shows strong forehand play...",
+      "shot_summary": [
+        {"shot_type":"Forehand","shot_count":20,"error_count":5,"winner_count":6},
+        {"shot_type":"Backhand","shot_count":10,"error_count":4,"winner_count":1}
+      ],
+      "strengths":[{"title":"Forehand strong"}],
+      "weaknesses":[{"title":"Backhand errors"}],
+      "recommendations":[{"title":"Use forehand more"}]
+    }
+  }
+}

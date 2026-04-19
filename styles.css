@@ -1,0 +1,52 @@
+body {
+  background: #0B1F33;
+  color: #E6EEF7;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.header-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #112442 !important;
+}
+
+.logo {
+  height: 40px;
+}
+
+.kpi {
+  background: #112442;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.kpi h2 {
+  color: #C0D942;
+}
+
+/* REPORT */
+
+.report {
+  background: white;
+  color: #222;
+}
+
+.report-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 40px;
+}
+
+.logo-report {
+  height: 50px;
+}
+
+h1 {
+  color: #112442;
+}
+
+h3 {
+  color: #49ACD9;
+}
