@@ -1,159 +1,139 @@
 {
-  "app": {
-    "name": "Momentum Padel",
-    "tagline": "Performance Platform",
-    "default_plan": "coach_pro",
-    "plans": {
-      "starter": {
-        "label": "Starter",
-        "summary": "Core player dashboard with headline metrics and trends."
-      },
-      "coach_pro": {
-        "label": "Coach Pro",
-        "summary": "Team comparison, training recommendations, session plans, and player reports."
-      },
-      "elite": {
-        "label": "Elite",
-        "summary": "Advanced benchmarking, guided onboarding, and premium report experience."
-      },
-      "custom": {
-        "label": "Custom",
-        "summary": "Configurable deployment for academy and performance environments."
-      }
-    }
-  },
-  "help_topics": [
-    {
-      "key": "trends",
-      "label": "Trends",
-      "title": "Understanding match trends",
-      "cards": [
-        {
-          "title": "What the trend chart shows",
-          "body": "The trend chart tracks winners, errors, and efficiency over recent matches to show whether performance is stabilising or regressing.",
-          "bullets": ["Use at least 4-6 matches for meaningful direction.", "Judge both absolute values and trend direction.", "Pair trend data with coaching observations."]
-        }
-      ]
-    },
-    {
-      "key": "plans",
-      "label": "Plans",
-      "title": "Using drills and session plans",
-      "cards": [
-        {
-          "title": "How plans are generated",
-          "body": "Session plans use the player's strongest shot, biggest error source, and benchmark gap to build a practical next-session structure.",
-          "bullets": ["Fix the biggest leak first.", "Protect confidence by training from a strength.", "Keep one tactical scenario block in every session."]
-        }
-      ]
-    },
-    {
-      "key": "insights",
-      "label": "Insights",
-      "title": "Reading strengths and weaknesses",
-      "cards": [
-        {
-          "title": "How insight priority works",
-          "body": "Strengths reflect efficient winner contribution and repeatability. Weaknesses reflect error burden, tactical exposure, and conversion gaps.",
-          "bullets": ["Do not overreact to one match.", "Look for repeated patterns.", "Use insight lists to guide training themes."]
-        }
-      ]
-    },
-    {
-      "key": "benchmarks",
-      "label": "Benchmarks",
-      "title": "Benchmark comparison",
-      "cards": [
-        {
-          "title": "How gaps are calculated",
-          "body": "Current performance is compared against a target level profile. Positive gap means above target for positive metrics, while a negative gap means below target.",
-          "bullets": ["Winner % higher is better.", "Error % lower is better.", "Use benchmark priority to sequence coaching focus."]
-        }
-      ]
-    }
-  ],
-  "tour_steps": [
-    {
-      "key": "hero",
-      "title": "Player snapshot",
-      "body": "Start with the headline, best shot, priority fix, and tracked matches to understand the current story quickly."
-    },
-    {
-      "key": "trends",
-      "title": "Trend layer",
-      "body": "Use the trend chart and signals to spot whether recent work is moving the player in the right direction."
-    },
-    {
-      "key": "benchmarks",
-      "title": "Benchmarking",
-      "body": "Compare current performance against the target profile to decide what matters most next."
-    },
-    {
-      "key": "comparison",
-      "title": "Squad comparison",
-      "body": "In team view, compare players side by side to identify who needs what support."
-    }
-  ],
-  "benchmarks": {
-    "club_competitive": {
-      "label": "Club Competitive",
-      "metrics": {
-        "winner_pct": 18.0,
-        "error_pct": 20.0,
-        "efficiency": 0.95,
-        "volley_winner_pct": 22.0,
-        "overhead_error_pct": 18.0
-      }
-    }
-  },
   "players": {
     "john": {
-      "player_name": "John",
-      "headline": "Strong forehand base, improving backhand consistency",
-      "summary": "John creates solid forehand pressure and is trending in the right direction, but still leaks points through backhand errors and passive return decisions.",
       "profile": {
-        "handedness": "Right-handed",
-        "level": "Club Competitive",
-        "focus_theme": "Backhand stability and return quality",
-        "best_shot_label": "Forehand drive",
-        "priority_fix_label": "Backhand under pressure"
+        "name": "John",
+        "headline": "Strong forehand base, improving backhand consistency",
+        "summary": "John creates solid forehand pressure and is trending in the right direction, but still leaks points through backhand errors and passive return decisions."
       },
-      "benchmark_profile": "club_competitive",
       "shot_summary": [
         { "shot_type": "Forehand", "shot_count": 40, "error_count": 8, "winner_count": 10 },
         { "shot_type": "Backhand", "shot_count": 35, "error_count": 15, "winner_count": 5 },
         { "shot_type": "Volley", "shot_count": 20, "error_count": 6, "winner_count": 4 },
         { "shot_type": "Overhead", "shot_count": 10, "error_count": 4, "winner_count": 3 }
       ],
-      "match_history": [
-        { "match_id": "M1", "date": "2026-03-15", "shots": 92, "winners": 16, "errors": 27 },
-        { "match_id": "M2", "date": "2026-03-22", "shots": 95, "winners": 17, "errors": 25 },
-        { "match_id": "M3", "date": "2026-03-29", "shots": 98, "winners": 18, "errors": 24 },
-        { "match_id": "M4", "date": "2026-04-05", "shots": 101, "winners": 19, "errors": 23 },
-        { "match_id": "M5", "date": "2026-04-12", "shots": 103, "winners": 20, "errors": 22 },
-        { "match_id": "M6", "date": "2026-04-19", "shots": 105, "winners": 22, "errors": 21 }
+      "kpis": {
+        "matches_tracked": 6
+      },
+      "history": [
+        {
+          "match": "M1",
+          "date": "2026-03-15",
+          "shots": 92,
+          "winners": 16,
+          "errors": 27,
+          "winner_pct": 17.4,
+          "error_pct": 29.3,
+          "efficiency": 0.59
+        },
+        {
+          "match": "M2",
+          "date": "2026-03-22",
+          "shots": 95,
+          "winners": 17,
+          "errors": 25,
+          "winner_pct": 17.9,
+          "error_pct": 26.3,
+          "efficiency": 0.68
+        },
+        {
+          "match": "M3",
+          "date": "2026-03-29",
+          "shots": 98,
+          "winners": 18,
+          "errors": 24,
+          "winner_pct": 18.4,
+          "error_pct": 24.5,
+          "efficiency": 0.75
+        },
+        {
+          "match": "M4",
+          "date": "2026-04-05",
+          "shots": 101,
+          "winners": 19,
+          "errors": 23,
+          "winner_pct": 18.8,
+          "error_pct": 22.8,
+          "efficiency": 0.83
+        },
+        {
+          "match": "M5",
+          "date": "2026-04-12",
+          "shots": 103,
+          "winners": 20,
+          "errors": 22,
+          "winner_pct": 19.4,
+          "error_pct": 21.4,
+          "efficiency": 0.91
+        },
+        {
+          "match": "M6",
+          "date": "2026-04-19",
+          "shots": 105,
+          "winners": 22,
+          "errors": 21,
+          "winner_pct": 21.0,
+          "error_pct": 20.0,
+          "efficiency": 1.05
+        }
       ],
       "milestones": [
-        { "title": "Backhand error rate below 40%", "status": "progress", "detail": "Down from 46% to 43% over the last 4 matches." },
-        { "title": "Forehand remains primary point-builder", "status": "achieved", "detail": "Forehand still leads winner contribution and rally control." }
+        {
+          "status": "In progress",
+          "title": "Backhand error rate below 40%",
+          "body": "Down from 46% to 43% over the last 4 matches."
+        },
+        {
+          "status": "Achieved",
+          "title": "Forehand remains primary point-builder",
+          "body": "Forehand still leads winner contribution and rally control."
+        }
       ],
       "recommended_drills": [
-        { "title": "Backhand wall rhythm", "goal": "Stabilise contact and height tolerance.", "duration_min": 12 },
-        { "title": "Serve + first ball forehand pattern", "goal": "Use strength to own the second shot.", "duration_min": 15 },
-        { "title": "Cross-court return decisions", "goal": "Reduce rushed attacking choices.", "duration_min": 10 }
+        {
+          "title": "Backhand wall rhythm",
+          "description": "Stabilise contact and height tolerance.",
+          "duration": "12 min"
+        },
+        {
+          "title": "Serve + first ball forehand pattern",
+          "description": "Use strength to own the second shot.",
+          "duration": "15 min"
+        },
+        {
+          "title": "Cross-court return decisions",
+          "description": "Reduce rushed attacking choices.",
+          "duration": "10 min"
+        }
       ],
       "session_plan": {
-        "duration_min": 50,
         "focus": "Backhand stability",
+        "duration": "50 min",
         "intensity": "Moderate",
         "blocks": [
-          { "title": "Technical warm-up", "minutes": 10, "detail": "Backhand rhythm, spacing, and controlled tempo." },
-          { "title": "Pressure repeaters", "minutes": 15, "detail": "Backhand under movement with target-zone scoring." },
-          { "title": "Pattern play", "minutes": 15, "detail": "Build points into forehand finish after safe backhand neutralisation." },
-          { "title": "Competitive games", "minutes": 10, "detail": "Score-based points starting from return situations." }
+          {
+            "title": "Technical warm-up",
+            "description": "Backhand rhythm, spacing, and controlled tempo.",
+            "duration": "10 min"
+          },
+          {
+            "title": "Pressure repeaters",
+            "description": "Backhand under movement with target-zone scoring.",
+            "duration": "15 min"
+          },
+          {
+            "title": "Pattern play",
+            "description": "Build points into forehand finish after safe backhand neutralisation.",
+            "duration": "15 min"
+          },
+          {
+            "title": "Competitive games",
+            "description": "Score-based points starting from return situations.",
+            "duration": "10 min"
+          }
         ]
       },
-      "insights": {
+      "analysis": {
         "strengths": [
           "Forehand remains the cleanest attacking platform.",
           "Winner production is trending up match to match."
@@ -161,140 +141,512 @@
         "weaknesses": [
           "Backhand error burden is still the main leak.",
           "Returns can become too aggressive too early in the rally."
+        ],
+        "coach_strengths": [
+          "Calm on forehand setup balls.",
+          "Better patience before accelerating."
+        ],
+        "coach_weaknesses": [
+          "Backhand shape breaks down under pace.",
+          "Needs more disciplined first-return targets."
+        ],
+        "coach_recommendations": [
+          "Train backhand height tolerance.",
+          "Use forehand patterns after safe neutral balls."
+        ],
+        "tactical": [
+          "Keep points cross-court longer before redirecting.",
+          "Do not force line changes from unstable backhand positions."
+        ],
+        "auto_recommendations": [
+          {
+            "title": "Primary focus",
+            "body": "Prioritise backhand under pressure because it currently creates the biggest drag on performance."
+          },
+          {
+            "title": "Strength to build from",
+            "body": "Anchor sessions around forehand drive to protect confidence while improving weaker areas."
+          },
+          {
+            "title": "Benchmark gap",
+            "body": "Largest benchmark gap currently sits in overhead error %, so training should link directly to that measure."
+          }
         ]
       },
-      "coach_notes": {
-        "strengths": ["Calm on forehand setup balls.", "Better patience before accelerating."],
-        "weaknesses": ["Backhand shape breaks down under pace.", "Needs more disciplined first-return targets."],
-        "recommendations": ["Train backhand height tolerance.", "Use forehand patterns after safe neutral balls."],
-        "tactical_observations": ["Keep points cross-court longer before redirecting.", "Do not force line changes from unstable backhand positions."]
-      }
+      "benchmarks": [
+        {
+          "metric": "Winner %",
+          "current": 20.95,
+          "benchmark": 18.0,
+          "gap": 2.95,
+          "priority": "Medium",
+          "percent": true
+        },
+        {
+          "metric": "Error %",
+          "current": 31.43,
+          "benchmark": 20.0,
+          "gap": -11.43,
+          "priority": "High",
+          "percent": true
+        },
+        {
+          "metric": "Efficiency",
+          "current": 0.67,
+          "benchmark": 0.95,
+          "gap": -0.28,
+          "priority": "Medium",
+          "percent": false
+        },
+        {
+          "metric": "Volley winner %",
+          "current": 20.0,
+          "benchmark": 22.0,
+          "gap": -2.0,
+          "priority": "Medium",
+          "percent": true
+        },
+        {
+          "metric": "Overhead error %",
+          "current": 40.0,
+          "benchmark": 18.0,
+          "gap": -22.0,
+          "priority": "High",
+          "percent": true
+        }
+      ]
     },
     "jenny": {
-      "player_name": "Jenny",
-      "headline": "Net game improving, needs better timing and patience",
-      "summary": "Jenny is becoming more assertive at the net, but still gives away too many points by closing too early and over-forcing first volleys.",
       "profile": {
-        "handedness": "Right-handed",
-        "level": "Club Competitive",
-        "focus_theme": "Volley timing and transition control",
-        "best_shot_label": "Forehand volley",
-        "priority_fix_label": "Backhand consistency"
+        "name": "Jenny",
+        "headline": "Net game improving, needs better timing and patience",
+        "summary": "Jenny is aggressive at the net but often moves forward too early, leading to avoidable errors and unstable first-volley decisions."
       },
-      "benchmark_profile": "club_competitive",
       "shot_summary": [
         { "shot_type": "Forehand", "shot_count": 30, "error_count": 10, "winner_count": 6 },
         { "shot_type": "Backhand", "shot_count": 30, "error_count": 12, "winner_count": 4 },
         { "shot_type": "Volley", "shot_count": 25, "error_count": 10, "winner_count": 6 },
         { "shot_type": "Overhead", "shot_count": 8, "error_count": 3, "winner_count": 2 }
       ],
-      "match_history": [
-        { "match_id": "M1", "date": "2026-03-15", "shots": 84, "winners": 14, "errors": 28 },
-        { "match_id": "M2", "date": "2026-03-22", "shots": 86, "winners": 14, "errors": 27 },
-        { "match_id": "M3", "date": "2026-03-29", "shots": 89, "winners": 15, "errors": 27 },
-        { "match_id": "M4", "date": "2026-04-05", "shots": 90, "winners": 16, "errors": 26 },
-        { "match_id": "M5", "date": "2026-04-12", "shots": 92, "winners": 17, "errors": 26 },
-        { "match_id": "M6", "date": "2026-04-19", "shots": 93, "winners": 18, "errors": 25 }
+      "kpis": {
+        "matches_tracked": 6
+      },
+      "history": [
+        {
+          "match": "M1",
+          "date": "2026-03-16",
+          "shots": 84,
+          "winners": 14,
+          "errors": 30,
+          "winner_pct": 16.7,
+          "error_pct": 35.7,
+          "efficiency": 0.47
+        },
+        {
+          "match": "M2",
+          "date": "2026-03-23",
+          "shots": 86,
+          "winners": 15,
+          "errors": 29,
+          "winner_pct": 17.4,
+          "error_pct": 33.7,
+          "efficiency": 0.52
+        },
+        {
+          "match": "M3",
+          "date": "2026-03-30",
+          "shots": 89,
+          "winners": 16,
+          "errors": 28,
+          "winner_pct": 18.0,
+          "error_pct": 31.5,
+          "efficiency": 0.57
+        },
+        {
+          "match": "M4",
+          "date": "2026-04-06",
+          "shots": 91,
+          "winners": 16,
+          "errors": 27,
+          "winner_pct": 17.6,
+          "error_pct": 29.7,
+          "efficiency": 0.59
+        },
+        {
+          "match": "M5",
+          "date": "2026-04-13",
+          "shots": 92,
+          "winners": 17,
+          "errors": 26,
+          "winner_pct": 18.5,
+          "error_pct": 28.3,
+          "efficiency": 0.65
+        },
+        {
+          "match": "M6",
+          "date": "2026-04-20",
+          "shots": 93,
+          "winners": 18,
+          "errors": 25,
+          "winner_pct": 19.4,
+          "error_pct": 26.9,
+          "efficiency": 0.72
+        }
       ],
       "milestones": [
-        { "title": "Net approach discipline improving", "status": "progress", "detail": "Better hold position before advancing on shorter balls." },
-        { "title": "Volley confidence growing", "status": "achieved", "detail": "Volley winner contribution now matches forehand winner contribution." }
+        {
+          "status": "In progress",
+          "title": "First-volley stability improving",
+          "body": "Cleaner net entry decisions across the last 3 matches."
+        },
+        {
+          "status": "Achieved",
+          "title": "Forehand transition patterns more controlled",
+          "body": "Rushed forehand attacks are reducing in neutral phases."
+        }
       ],
       "recommended_drills": [
-        { "title": "Transition stop-starts", "goal": "Improve movement timing toward the net.", "duration_min": 10 },
-        { "title": "First-volley decision ladder", "goal": "Choose safer targets under pressure.", "duration_min": 15 },
-        { "title": "Backhand groove block", "goal": "Reduce neutral-ball misses.", "duration_min": 12 }
+        {
+          "title": "Split-step to first volley block",
+          "description": "Improve timing before closing the net.",
+          "duration": "12 min"
+        },
+        {
+          "title": "Forehand approach patterning",
+          "description": "Build safer attack triggers before moving forward.",
+          "duration": "15 min"
+        },
+        {
+          "title": "Return patience games",
+          "description": "Delay acceleration until the second or third neutral ball.",
+          "duration": "10 min"
+        }
       ],
       "session_plan": {
-        "duration_min": 48,
-        "focus": "Transition timing",
+        "focus": "Net timing",
+        "duration": "45 min",
         "intensity": "Moderate",
         "blocks": [
-          { "title": "Movement prep", "minutes": 8, "detail": "Split-step timing and forward movement cues." },
-          { "title": "Volley control", "minutes": 15, "detail": "First-volley targets with live feeds and scoring." },
-          { "title": "Backhand reliability", "minutes": 15, "detail": "Cross-court neutral balls with rhythm goals." },
-          { "title": "Constraint points", "minutes": 10, "detail": "Points where volley winners only count after two safe balls." }
+          {
+            "title": "Movement preparation",
+            "description": "Split-step timing and forward balance into first volley position.",
+            "duration": "10 min"
+          },
+          {
+            "title": "Controlled first volley",
+            "description": "Land softer, safer first volleys into margin zones.",
+            "duration": "10 min"
+          },
+          {
+            "title": "Approach decision drills",
+            "description": "Train clearer triggers before committing forward.",
+            "duration": "15 min"
+          },
+          {
+            "title": "Pressure games",
+            "description": "Score only when net entries start from the right ball.",
+            "duration": "10 min"
+          }
         ]
       },
-      "insights": {
+      "analysis": {
         "strengths": [
-          "Volley intent is becoming a real weapon.",
-          "Recent match winners have increased steadily."
+          "Aggressive net intent creates pressure when timing is right.",
+          "Forehand still gives Jenny the cleanest route into attack."
         ],
         "weaknesses": [
-          "Backhand misses still disrupt neutral rallies.",
-          "Approach timing can expose the body too early."
+          "Early forward movement creates avoidable volley errors.",
+          "Backhand consistency still dips under pace."
+        ],
+        "coach_strengths": [
+          "Positive attacking mindset at the front of the court.",
+          "Willing to take space early when confident."
+        ],
+        "coach_weaknesses": [
+          "Can overcommit before the rally is ready for a net move.",
+          "Backhand shape gets rushed when defending fast exchanges."
+        ],
+        "coach_recommendations": [
+          "Train net entry timing before increasing volley aggression.",
+          "Keep the first volley safer and deeper."
+        ],
+        "tactical": [
+          "Build one more neutral ball before moving through the middle.",
+          "Use forehand approach balls to control tempo before closing."
+        ],
+        "auto_recommendations": [
+          {
+            "title": "Primary focus",
+            "body": "Improve first-volley timing so aggressive court positioning becomes more efficient."
+          },
+          {
+            "title": "Strength to build from",
+            "body": "Use forehand transition quality as the main route into attack."
+          },
+          {
+            "title": "Benchmark gap",
+            "body": "Biggest cost currently comes from total error % and unstable volley execution."
+          }
         ]
       },
-      "coach_notes": {
-        "strengths": ["Positive presence at the net.", "More willingness to finish when set."],
-        "weaknesses": ["Forces first volley too often.", "Backhand misses shorten rallies unnecessarily."],
-        "recommendations": ["Delay net commitment until ball quality allows it.", "Train calm first volleys to the middle third."],
-        "tactical_observations": ["Use deeper margin targets before closing.", "Win the transition before trying to win the point."]
-      }
+      "benchmarks": [
+        {
+          "metric": "Winner %",
+          "current": 19.35,
+          "benchmark": 18.0,
+          "gap": 1.35,
+          "priority": "Medium",
+          "percent": true
+        },
+        {
+          "metric": "Error %",
+          "current": 37.63,
+          "benchmark": 20.0,
+          "gap": -17.63,
+          "priority": "High",
+          "percent": true
+        },
+        {
+          "metric": "Efficiency",
+          "current": 0.5,
+          "benchmark": 0.95,
+          "gap": -0.45,
+          "priority": "High",
+          "percent": false
+        },
+        {
+          "metric": "Volley winner %",
+          "current": 24.0,
+          "benchmark": 22.0,
+          "gap": 2.0,
+          "priority": "Medium",
+          "percent": true
+        },
+        {
+          "metric": "Overhead error %",
+          "current": 37.5,
+          "benchmark": 18.0,
+          "gap": -19.5,
+          "priority": "High",
+          "percent": true
+        }
+      ]
     },
     "heidi": {
-      "player_name": "Heidi",
-      "headline": "Defensive stability improving, overhead still a weakness",
-      "summary": "Heidi is defending with more control and reading rallies better, but overhead situations still create too many cheap errors and missed finishing chances.",
       "profile": {
-        "handedness": "Right-handed",
-        "level": "Club Competitive",
-        "focus_theme": "Overhead confidence and finishing",
-        "best_shot_label": "Forehand defence",
-        "priority_fix_label": "Overhead under lob pressure"
+        "name": "Heidi",
+        "headline": "Defensive stability improving, overhead still a weakness",
+        "summary": "Heidi defends well and absorbs pace effectively, but still loses too many points under lob pressure and needs more confidence finishing overhead opportunities."
       },
-      "benchmark_profile": "club_competitive",
       "shot_summary": [
         { "shot_type": "Forehand", "shot_count": 35, "error_count": 9, "winner_count": 7 },
         { "shot_type": "Backhand", "shot_count": 32, "error_count": 11, "winner_count": 5 },
         { "shot_type": "Volley", "shot_count": 18, "error_count": 5, "winner_count": 3 },
         { "shot_type": "Overhead", "shot_count": 12, "error_count": 7, "winner_count": 2 }
       ],
-      "match_history": [
-        { "match_id": "M1", "date": "2026-03-15", "shots": 88, "winners": 13, "errors": 29 },
-        { "match_id": "M2", "date": "2026-03-22", "shots": 90, "winners": 13, "errors": 28 },
-        { "match_id": "M3", "date": "2026-03-29", "shots": 91, "winners": 14, "errors": 27 },
-        { "match_id": "M4", "date": "2026-04-05", "shots": 93, "winners": 15, "errors": 27 },
-        { "match_id": "M5", "date": "2026-04-12", "shots": 95, "winners": 16, "errors": 26 },
-        { "match_id": "M6", "date": "2026-04-19", "shots": 97, "winners": 17, "errors": 25 }
+      "kpis": {
+        "matches_tracked": 6
+      },
+      "history": [
+        {
+          "match": "M1",
+          "date": "2026-03-14",
+          "shots": 90,
+          "winners": 14,
+          "errors": 28,
+          "winner_pct": 15.6,
+          "error_pct": 31.1,
+          "efficiency": 0.50
+        },
+        {
+          "match": "M2",
+          "date": "2026-03-21",
+          "shots": 92,
+          "winners": 15,
+          "errors": 27,
+          "winner_pct": 16.3,
+          "error_pct": 29.3,
+          "efficiency": 0.56
+        },
+        {
+          "match": "M3",
+          "date": "2026-03-28",
+          "shots": 94,
+          "winners": 15,
+          "errors": 26,
+          "winner_pct": 16.0,
+          "error_pct": 27.7,
+          "efficiency": 0.58
+        },
+        {
+          "match": "M4",
+          "date": "2026-04-04",
+          "shots": 95,
+          "winners": 16,
+          "errors": 25,
+          "winner_pct": 16.8,
+          "error_pct": 26.3,
+          "efficiency": 0.64
+        },
+        {
+          "match": "M5",
+          "date": "2026-04-11",
+          "shots": 96,
+          "winners": 16,
+          "errors": 24,
+          "winner_pct": 16.7,
+          "error_pct": 25.0,
+          "efficiency": 0.67
+        },
+        {
+          "match": "M6",
+          "date": "2026-04-18",
+          "shots": 97,
+          "winners": 17,
+          "errors": 23,
+          "winner_pct": 17.5,
+          "error_pct": 23.7,
+          "efficiency": 0.74
+        }
       ],
       "milestones": [
-        { "title": "Defensive rally tolerance improving", "status": "achieved", "detail": "Forehand and backhand defence both trending steadier." },
-        { "title": "Overhead confidence still in build phase", "status": "progress", "detail": "Error rate is slowly reducing but remains above target." }
+        {
+          "status": "In progress",
+          "title": "Overhead confidence under pressure",
+          "body": "Decision quality has improved, but contact errors are still too high."
+        },
+        {
+          "status": "Achieved",
+          "title": "Defensive absorption more stable",
+          "body": "Heidi is sustaining longer rallies before giving away neutral balls."
+        }
       ],
       "recommended_drills": [
-        { "title": "Overhead footwork entry", "goal": "Improve setup and spacing under lobs.", "duration_min": 12 },
-        { "title": "Bandeja margin ladder", "goal": "Increase safe overhead repetition.", "duration_min": 15 },
-        { "title": "Defend-to-attack game", "goal": "Convert good defence into controlled offence.", "duration_min": 12 }
+        {
+          "title": "Overhead recovery footwork",
+          "description": "Improve balance and spacing after deep lobs.",
+          "duration": "12 min"
+        },
+        {
+          "title": "Backhand absorb-and-reset",
+          "description": "Hold shape better under pace before redirecting.",
+          "duration": "15 min"
+        },
+        {
+          "title": "Defend-to-attack transition games",
+          "description": "Convert defensive stability into cleaner finishing opportunities.",
+          "duration": "10 min"
+        }
       ],
       "session_plan": {
-        "duration_min": 52,
-        "focus": "Overhead confidence",
-        "intensity": "Moderate-High",
+        "focus": "Overhead stability",
+        "duration": "50 min",
+        "intensity": "Moderate",
         "blocks": [
-          { "title": "Footwork prep", "minutes": 10, "detail": "Turn, crossover, and spacing before overhead contact." },
-          { "title": "Bandeja repetition", "minutes": 15, "detail": "High-margin overhead targets from fed lobs." },
-          { "title": "Live lob recovery", "minutes": 15, "detail": "Decision making from defensive and neutral lobs." },
-          { "title": "Scenario points", "minutes": 12, "detail": "Score points where overhead execution is the trigger to attack." }
+          {
+            "title": "Footwork warm-up",
+            "description": "Drop-step, crossover, and recovery movement for lob coverage.",
+            "duration": "10 min"
+          },
+          {
+            "title": "Contact ladder",
+            "description": "Build repeatable overhead timing from simple feeds into pressure feeds.",
+            "duration": "15 min"
+          },
+          {
+            "title": "Defensive reset patterns",
+            "description": "Absorb pace and recover structure before finishing the point.",
+            "duration": "15 min"
+          },
+          {
+            "title": "Competitive overhead games",
+            "description": "Reward clean overhead decisions rather than forced finishes.",
+            "duration": "10 min"
+          }
         ]
       },
-      "insights": {
+      "analysis": {
         "strengths": [
-          "Defensive control is becoming more repeatable.",
-          "Winner count is climbing without extra shot volume spikes."
+          "Defensive rally tolerance is improving steadily.",
+          "Forehand still gives the clearest opportunity to neutralise and rebuild."
         ],
         "weaknesses": [
-          "Overhead error rate remains the largest single weakness.",
-          "Missed overhead finishes leave points unfinished."
+          "Overhead error rate remains the biggest performance leak.",
+          "Backhand can lose penetration when defending deep."
+        ],
+        "coach_strengths": [
+          "Good willingness to stay in the point and absorb pace.",
+          "Improved shape in longer defensive exchanges."
+        ],
+        "coach_weaknesses": [
+          "Overhead contact still breaks down under lob pressure.",
+          "Can become passive after defending two or three balls well."
+        ],
+        "coach_recommendations": [
+          "Train overhead spacing before increasing finish aggression.",
+          "Build one positive transition ball after deep defence."
+        ],
+        "tactical": [
+          "Use deeper central resets before looking for the next attack.",
+          "Do not rush the overhead finish from unstable footwork."
+        ],
+        "auto_recommendations": [
+          {
+            "title": "Primary focus",
+            "body": "Reduce overhead errors first, because that is the biggest current drag on point conversion."
+          },
+          {
+            "title": "Strength to build from",
+            "body": "Keep using defensive tolerance as the base while adding one controlled finishing pattern."
+          },
+          {
+            "title": "Benchmark gap",
+            "body": "The largest gap sits in overhead error %, so that should anchor the next training block."
+          }
         ]
       },
-      "coach_notes": {
-        "strengths": ["Better calmness in defensive exchanges.", "Reads slower balls earlier than before."],
-        "weaknesses": ["Overhead setup too late under high lobs.", "Needs a safer default overhead pattern."],
-        "recommendations": ["Train a reliable bandeja before chasing winners.", "Own court position before accelerating."],
-        "tactical_observations": ["Respect deep lobs and create space early.", "Use safer overhead placement until balance improves."]
-      }
+      "benchmarks": [
+        {
+          "metric": "Winner %",
+          "current": 17.53,
+          "benchmark": 18.0,
+          "gap": -0.47,
+          "priority": "Medium",
+          "percent": true
+        },
+        {
+          "metric": "Error %",
+          "current": 33.01,
+          "benchmark": 20.0,
+          "gap": -13.01,
+          "priority": "High",
+          "percent": true
+        },
+        {
+          "metric": "Efficiency",
+          "current": 0.57,
+          "benchmark": 0.95,
+          "gap": -0.38,
+          "priority": "High",
+          "percent": false
+        },
+        {
+          "metric": "Volley winner %",
+          "current": 16.67,
+          "benchmark": 22.0,
+          "gap": -5.33,
+          "priority": "Medium",
+          "percent": true
+        },
+        {
+          "metric": "Overhead error %",
+          "current": 58.33,
+          "benchmark": 18.0,
+          "gap": -40.33,
+          "priority": "High",
+          "percent": true
+        }
+      ]
     }
   }
 }
